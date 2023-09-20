@@ -31,3 +31,7 @@ def signup():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     return render_template('login.html')
+
+@app.route('/profile', methods=['GET', 'POST'])
+def profile():
+    return render_template('profile.html')
