@@ -1,0 +1,32 @@
+{% extends "base.html"%} {% block title %}TARUMT ITP Portal{% endblock %} {%
+block content %}
+<div class="container-fluid mt-5">
+  <div class="container">
+    <h1>Login</h1>
+    <hr />
+
+    <div class="container">
+      <form action="">
+        <div class="mb-3 row">
+          <label for="staticEmail" class="col-sm col-form-label">Email</label>
+          <div class="col-sm">
+            <input type="email" name="email" id="" class="form-control" />
+          </div>
+        </div>
+        <div class="mb-4 row">
+          <label for="staticEmail" class="col-sm col-form-label"
+            >Password</label
+          >
+          <div class="col-sm">
+            <input type="password" name="password" id="" class="form-control" />
+          </div>
+        </div>
+        <div class="text-center">
+          <button type="submit" class="btn btn-success">Login</button>
+        </div>
+      </form>
+    </div>
+    <hr />
+  </div>
+</div>
+{% endblock %}
