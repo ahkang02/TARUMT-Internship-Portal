@@ -1,15 +1,59 @@
 {% extends "base.html"%} {% block title %}TARUMT ITP Portal{% endblock %} {%
 block content %}
+
+<style>
+  .col-md-4 {
+    font-weight: bold;
+  }
+
+</style>
+
 <div class="container-fluid mt-5">
-  <div class="container">
+  <div class="container mt-3">
     <h1>Welcome XXXXXX</h1>
     <div class="row">
-      <div class="col-md border border-light-subtle me-3 mb-3">a</div>
-      <div class="col-sm border border-light-subtle">a</div>
-    </div>
-    <div class="row">
-        <div class="col-md-6 border border-light-subtle me-3">a</div>
+      <div class="col-md-8 border border-light-subtle me-3 mb-3 pt-3 ps-3">
+        <div class="container-fluid">
+          <p class="fw-bold">Summary</p>
+        </div>
+        <hr> 
+        <div class="container">
+          <div class="row">
+            <div class="col-md-4">
+              <p>Cohort</p>
+            </div>
+            <div class="col-md-8">
+              <p>Profile</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <p>Intern Period</p>
+            </div>
+            <div class="col-md-8">
+              <p>Profile</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <p>Status</p>
+            </div>
+            <div class="col-md-8">
+              <p>Profile</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <p>Remark</p>
+            </div>
+            <div class="col-md-8">
+              <p>Profile</p>
+            </div>
+          </div>
+        </div>
       </div>
+      <div class="col-md-3 border border-light-subtle">a</div>
+    </div>
   </div>
 </div>
 {% endblock %}
