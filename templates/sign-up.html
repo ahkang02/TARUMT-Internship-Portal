@@ -100,7 +100,7 @@ block content %}
         <div class="col-sm-10">
           <input
             type="text"
-            name="tutorialGrp"
+            name="studCGPA"
             id=""
             class="form-control"
             placeholder=" e.g: 1.0 - 4.0"
@@ -112,7 +112,7 @@ block content %}
           >UC Supervisor</label
         >
         <div class="col-sm-10">
-          <input type="text" name="ucSupervisor" id="" class="form-control" />
+          <input id="ucSupervisorName" type="text" name="ucSupervisor" class="form-control" />
         </div>
       </div>
       <div class="mb-3 row">
@@ -123,7 +123,7 @@ block content %}
           <input
             type="email"
             name="ucSupervisorEmail"
-            id=""
+            id="ucSupervisorEmail"
             class="form-control"
             disabled
           />
@@ -346,38 +346,39 @@ block content %}
 </div>
 
       <script>
-        var select = document.getElementById("level");
-        var selectToAppend = document.getElementById("programme");
 
-        var diplomaArr = ["DCS", "DFT", "DIS", "DIT", "DSE", "DDS"];
-        var degreeArr = [
-          "RSW",
-          "RMM",
-          "REI",
-          "RIS",
-          "RSD",
-          "RIT",
-          "RDS",
-          "RST",
-        ];
-        select.addEventListener("change", function () {
-          selectedOption = this.options[select.selectedIndex];
+        $('#ucSupervisorName').change(function() {
+          $.ajax({
+            url: '',
+            type: 'get',
+            contentType: 'application/json',
+            data: {
+              ucSupervisorName: $(this).val()
+            },
+            success: function(response) {
+              $('#ucSupervisorEmail').val(response.ucSupervisorEmail);
+            }
+          })
+        })
 
-          if (selectedOption.value == "Diploma") {
-            let options = diplomaArr
-              .map((diploma) => `<option value=${diploma}>${diploma}</option>`)
-              .join("\n");
-            selectToAppend.innerHTML = options;
-          } else if (selectedOption.value == "Bachelor") {
-            let options = degreeArr
-              .map((degree) => `<option value=${degree}>${degree}</option>`)
-              .join("\n");
-            selectToAppend.innerHTML = options;
-          } else {
-            selectToAppend.innerHTML =
-              "<option selected>-- Select One -- </option>";
-          }
-        });
+        $('#level').change(function() {
+          $.ajax({
+            url: "./process_level",
+            type: 'get',
+            contentType: 'application/json',
+            data: {
+              level: $(this).val()
+            },
+            success: function(response) {
+              $('#programme').empty()
+              $('#programme').append(`<option selected>-- Select One --</option>`)
+              response.map((programme) => {
+                $('#programme').append(`<option value=${programme}>${programme}</option>`)
+              })
+              console.log(response)
+            }
+          })
+        })
       </script>
 
       {% endblock %}

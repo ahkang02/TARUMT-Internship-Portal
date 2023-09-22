@@ -1,7 +1,9 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
 import mariadb, sys
 from config import *
 import uuid
+import json
+import os
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = SECRET_KEY
@@ -26,8 +28,33 @@ app.config['SECRET_KEY'] = SECRET_KEY
 def index():
     return render_template('index.html')
 
+@app.route('/process_level', methods=['GET'])
+def process_level():
+    if request.is_json:
+        SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
+        json_url = os.path.join(SITE_ROOT, "static/json", "LevelDataDB.json")
+        data_dict = json.load(open(json_url))
+
+        if request.args.get('level') == "Bachelor":
+            return jsonify(data_dict["Bachelor"])
+        elif request.args.get('level') == "Diploma":
+            return jsonify(data_dict["Diploma"])
+
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
+
+    if request.is_json:
+        SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
+        json_url = os.path.join(SITE_ROOT, "static/json", "StaffDataDB.json")
+        data_dict = json.load(open(json_url))
+
+        for key, value in data_dict.items():
+            if isinstance(value, list):
+                data_dict[key] = [item.upper() for item in value]
+        name_to_email = dict(zip(data_dict["name"], data_dict["email"]))
+        ucSupervisorName = request.args.get('ucSupervisorName')
+        email = name_to_email.get(ucSupervisorName.upper(), "Email not found")
+        return jsonify({'ucSupervisorEmail': email.lower()})
 
     if request.method == 'POST':
         level = request.form['level']
@@ -36,6 +63,7 @@ def signup():
         tutGrp = request.form['tutorialGrp']
         studID = request.form['studentID']
         studEmail = request.form["studentEmail"]
+        studCGPA = request.form["studCGPA"]
         studentSupervisor = request.form["ucSupervisor"]
         studentSuperEmail = request.form["ucSupervisorEmail"]
         studFullName = request.form["studentFullName"]

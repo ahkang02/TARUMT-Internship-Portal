@@ -10,20 +10,30 @@
       href="{{url_for('static', filename='css/bootstrap.min.css')}}"
     />
 
-    <link rel="stylesheet" href="{{url_for('static', filename='css/fontawesome/css/fontawesome.css')}}" />
-    <link rel="stylesheet" href="{{url_for('static', filename='css/fontawesome/css/brands.css')}}" />
-    <link rel="stylesheet" href="{{url_for('static', filename='css/fontawesome/css/solid.css')}}" />
+    <link
+      rel="stylesheet"
+      href="{{url_for('static', filename='css/fontawesome/css/fontawesome.css')}}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{url_for('static', filename='css/fontawesome/css/brands.css')}}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{url_for('static', filename='css/fontawesome/css/solid.css')}}"
+    />
 
     <style>
-         .navbar-brand, a {
-            color: white;
-        }
+      .navbar-brand,
+      a {
+        color: white;
+      }
     </style>
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
   </head>
   <body>
-    <header style="background-color: #040404;">
-      <nav class="navbar navbar-expand-lg" style="color: white;">
+    <header style="background-color: #040404">
+      <nav class="navbar navbar-expand-lg" style="color: white">
         <div class="container">
           <button
             class="navbar-toggler"
@@ -40,25 +50,41 @@
             class="collapse navbar-collapse justify-content-between"
             id="navbarTogglerDemo01"
           >
-            <a class="navbar-brand fw-bold" href="{{url_for('index')}}">ITP ONLINE</a>
+            <a class="navbar-brand fw-bold" href="{{url_for('index')}}"
+              >ITP ONLINE</a
+            >
             <div class="container-fluid text-end text-decoration-none px-3">
               {% if session['username'] %}
-              <a class="text-decoration-none px-2 fw-bold" href="{{url_for('logout')}}"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+              <a
+                class="text-decoration-none px-2 fw-bold"
+                href="{{url_for('logout')}}"
+                ><i class="fa-solid fa-right-from-bracket"></i> Logout</a
+              >
               {% else %}
-              <a class="text-decoration-none px-2 fw-bold" href="{{url_for('login')}}"><i class="fa-solid fa-right-to-bracket"></i> Login</a>
-              <a class="text-decoration-none px-2 fw-bold" href="{{url_for('signup')}}"><i class="fa-solid fa-user-plus"></i> Sign Up</a>
+              <a
+                class="text-decoration-none px-2 fw-bold"
+                href="{{url_for('login')}}"
+                ><i class="fa-solid fa-right-to-bracket"></i> Login</a
+              >
+              <a
+                class="text-decoration-none px-2 fw-bold"
+                href="{{url_for('signup')}}"
+                ><i class="fa-solid fa-user-plus"></i> Sign Up</a
+              >
               {% endif %}
-          </div>
+            </div>
           </div>
         </div>
       </nav>
     </header>
 
-    {% block content %}
-    {% endblock %}
+    {% block content %} {% endblock %}
 
     <script src="{{url_for('static', filename='js/bootstrap.bundle.min.js')}}"></script>
     <script src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
-    <script src="https://kit.fontawesome.com/4345d84e2d.js" crossorigin="anonymous"></script>   
+    <script
+      src="https://kit.fontawesome.com/4345d84e2d.js"
+      crossorigin="anonymous"
+    ></script>
   </body>
 </html>
