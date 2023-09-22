@@ -42,9 +42,13 @@
           >
             <a class="navbar-brand fw-bold" href="{{url_for('index')}}">ITP ONLINE</a>
             <div class="container-fluid text-end text-decoration-none px-3">
-                <a class="text-decoration-none px-2 fw-bold" href="{{url_for('login')}}"><i class="fa-solid fa-right-to-bracket"></i> Login</a>
-                <a class="text-decoration-none px-2 fw-bold" href="{{url_for('signup')}}"><i class="fa-solid fa-user-plus"></i> Sign Up</a>
-            </div>
+              {% if session['username'] %}
+              <a class="text-decoration-none px-2 fw-bold" href="{{url_for('logout')}}"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+              {% else %}
+              <a class="text-decoration-none px-2 fw-bold" href="{{url_for('login')}}"><i class="fa-solid fa-right-to-bracket"></i> Login</a>
+              <a class="text-decoration-none px-2 fw-bold" href="{{url_for('signup')}}"><i class="fa-solid fa-user-plus"></i> Sign Up</a>
+              {% endif %}
+          </div>
           </div>
         </div>
       </nav>
