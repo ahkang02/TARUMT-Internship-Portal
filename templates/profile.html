@@ -5,7 +5,7 @@ block content %}
   <h2>Welcome : CHONG ZHI HONG</h2>
   <span>Upload Report</span>
   <span> | View</span>
-  <form action="">
+  <form action="{{url_for('profile')}}" method="POST">
     <hr>
     <div class="panel-group mt-2 border border-light-subtle shadow">
       <div class="panel panel-default">
@@ -93,7 +93,7 @@ block content %}
           </div>
           <div class="mb-3 row">
            <div class="col-sm-2">
-            <input type="submit" value="Update">
+            <input type="submit" value="Update" name="Update">
            </div>
           </div>
         </div>
@@ -167,7 +167,7 @@ block content %}
           </div>
           <div class="mb-3 row">
             <div class="col-sm-2">
-             <input type="submit" value="Save & Submit">
+             <input type="submit" value="Save & Submit" name="Submit">
             </div>
            </div>
         </div>
