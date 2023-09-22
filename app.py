@@ -106,6 +106,21 @@ def logout():
 
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
+    
+    if request.form['submit_button'] == 'Update':
+        ucSupervisorName = request.form['ucSupervisorName']
+        ucSupervisorEmail = request.form['ucSupervisorEmail']
+
+        ## Retrieve Info Then Update DB (Will Do Tomorrow)
+    elif request.form['submit_button'] == "Save & Submit" :
+        acceptanceForm = request.files['acceptanceForm"']
+        parentAckForm = request.files['parentAckForm']
+        indemnityLetter = request.files['indemnityLetter']
+        hiredEvidence = request.files['hiredEvidence']
+
+        ## Upload To DB (File Name) -> Send To S3 (Will Do Tomorrow)
+
+
     return render_template('profile.html')
 
 if __name__ == "__main__":
