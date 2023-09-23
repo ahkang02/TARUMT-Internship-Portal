@@ -4,6 +4,7 @@ from config import *
 import uuid
 import json
 import os
+import boto3
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = SECRET_KEY
@@ -135,7 +136,6 @@ def login():
 
         if username == rows[8] and password == rows[3]:
             session["username"] = username
-            print(session["username"])
         return redirect(url_for('profile'))
     
     else:
@@ -158,7 +158,7 @@ def profile():
 
     select_stmt_sv = "SELECT * FROM Supervisor WHERE suvID = %s"
     cur.execute(select_stmt_sv, (rows[10],))
-    sv_rows = cur.fetchone()
+    sv_rows = cur.fetchone() 
 
     cur.close()
 
@@ -187,11 +187,51 @@ def profile():
             return redirect(url_for('profile'))
 
             ## Retrieve Info Then Update DB (Will Do Tomorrow)
-        elif request.form['submit_button'] == "Save & Submit" :
-            acceptanceForm = request.files['acceptanceForm"']
-            parentAckForm = request.files['parentAckForm']
-            indemnityLetter = request.files['indemnityLetter']
-            hiredEvidence = request.files['hiredEvidence']
+        elif request.form['submit_button'] == "Submit" :
+            print("Submit")
+            acceptanceForm = request.files['file']
+            print(acceptanceForm.filename)
+            #companyName = request.form['companyName']
+
+            #select_stmt = "SELECT compID FROM Company WHERE compName = %s"
+            #update_stmt = "UPDATE Student SET companyID = %s WHERE studEmail = %s"
+
+            #cur = conn.cursor()
+            #cur.execute(select_stmt, (companyName,))
+            #rows = cur.fetchone()
+            #cur.execute(update_stmt, (rows[0], session["username"]))
+            #conn.commit()
+            #cur.close()
+
+ 
+            #parentAckForm = request.files['parentAckForm']
+            #indemnityLetter = request.files['indemnityLetter']
+            #hiredEvidence = request.files['hiredEvidence']
+
+            ## Upload Files to S3
+            s3 = boto3.resource('s3')
+
+            try:
+                print("Uploading to S3")
+                s3.Bucket(S3_BUCKET_NAME).put_object(Key=acceptanceForm.filename, Body=acceptanceForm)
+                bucket_location = boto3.client('s3').get_bucket_location(Bucket=S3_BUCKET_NAME)
+                s3_location = (bucket_location['LocationConstraint'])
+
+                if s3_location is None:
+                    s3_location = ''
+                else:
+                    s3_location = '-' + s3_location
+                
+                object_url = "https://s3{0}.amazonaws.com/{1}/{2}".format(
+                    s3_location,
+                    S3_BUCKET_NAME,
+                    acceptanceForm.filename
+                )
+            except Exception as e:
+                print("Error: ", e)
+
+            return redirect(url_for('profile'))
+
 
             ## Upload To DB (File Name) -> Send To S3 (Will Do Tomorrow)
 
