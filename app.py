@@ -9,20 +9,20 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = SECRET_KEY
 
 # Connect to MariaDB Platform
-# try:
-#    conn = mariadb.connect(
-#        user = RDS_LOGIN,
-#        password = RDS_PASS,
-#        host = RDS_HOST_ENDPOINT,
-#        port = DB_PORT,
-#        database = DB_INSTANCE_NAME
-#    )
-# except mariadb.Error as e:
-#    print(f"Error connecting to MariaDB Platform: {e}")
-#    sys.exit(1)
+try:
+    conn = mariadb.connect(
+        user = RDS_LOGIN,
+        password = RDS_PASS,
+        host = RDS_HOST_ENDPOINT,
+        port = DB_PORT,
+        database = DB_INSTANCE_NAME
+    )
+except mariadb.Error as e:
+    print(f"Error connecting to MariaDB Platform: {e}")
+    sys.exit(1)
     
 # Get Cursor
-# cur = conn.cursor()
+cur = conn.cursor()
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -48,13 +48,13 @@ def signup():
         json_url = os.path.join(SITE_ROOT, "static/json", "StaffDataDB.json")
         data_dict = json.load(open(json_url))
 
-        for key, value in data_dict.items():
-            if isinstance(value, list):
-                data_dict[key] = [item.upper() for item in value]
-        name_to_email = dict(zip(data_dict["name"], data_dict["email"]))
-        ucSupervisorName = request.args.get('ucSupervisorName')
-        email = name_to_email.get(ucSupervisorName.upper(), "Email not found")
-        return jsonify({'ucSupervisorEmail': email.lower()})
+        cur = conn.cursor()
+        select_stmt = "SELECT * FROM Supervisor WHERE suvName = %s"
+        cur.execute(select_stmt, (request.args.get('ucSupervisorName'),))
+        rows = cur.fetchone()
+        cur.close()
+
+        return jsonify({'ucSupervisorEmail':rows[2].lower()})
 
     if request.method == 'POST':
         level = request.form['level']
@@ -65,7 +65,6 @@ def signup():
         studEmail = request.form["studentEmail"]
         studCGPA = request.form["studCGPA"]
         studentSupervisor = request.form["ucSupervisor"]
-        studentSuperEmail = request.form["ucSupervisorEmail"]
         studFullName = request.form["studentFullName"]
         studIC = request.form["studIC"]
         studGender = request.form["studGender"]
@@ -80,19 +79,45 @@ def signup():
         studDatabaseSkills = request.form["studDatabaseSkills"]
         studNetworkingSkills = request.form["studNetworkingSkills"]
 
-        insert_sql = "INSERT INTO STUDENTS VALUES (%s, %s, %s,%s, %s, %s,%s, %s, %s,%s, %s, %s,%s, %s, %s,%s, %s, %s,%s, %s, %s)"
+        select_stmt = "SELECT suvID FROM Supervisor WHERE suvName = %s"
+        insert_sql = "INSERT INTO Student VALUES (%s, %s, %s,%s, %s, %s,%s, %s, %s,%s, %s, %s,%s, %s, %s,%s, %s, %s,%s, %s, %s, %s, %s, %s)"
+        try:
+            cur = conn.cursor()
+            cur.execute(select_stmt, (studentSupervisor,))
+            rows = cur.fetchone()
+            print(rows)
+            cur.execute(insert_sql, (None, studFullName, studID, studIC, studGender, cohort, level, programme, studEmail, studCGPA, rows[0], studTransport, studHealthRemark, studPersonalEmail, studTermAddress, studPermanentAddress, studMobileNumber, studFixedNumber, studTechnicalSkills, studDatabaseSkills, studNetworkingSkills, None, None, tutGrp))
+            conn.commit()
+            cur.close()
+        
+        except mariadb.Error as e:
+            print(f"Error: {e}")
+            sys.exit(1)
+
         return redirect(url_for('login'))
 
     return render_template('sign-up.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        session["username"] = username
 
+        try:
+            select_stmt = "SELECT * FROM Student WHERE studEmail = %s"
+            cur.execute(select_stmt, (username,))
+            rows = cur.fetchone()
+            cur.close()
+        except mariadb.Error as e:
+            print(f"Error: {e}")
+
+        if username == rows[8] and password == rows[3]:
+            session["username"] = username
+            print(session["username"])
         return redirect(url_for('profile'))
+    
     else:
         if "user" in session:
             return redirect(url_for('profile'))
@@ -106,22 +131,52 @@ def logout():
 
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
-    
-    if request.form['submit_button'] == 'Update':
-        ucSupervisorName = request.form['ucSupervisorName']
-        ucSupervisorEmail = request.form['ucSupervisorEmail']
+    cur = conn.cursor()
+    select_stmt = "SELECT * FROM Student WHERE studEmail = %s"
+    cur.execute(select_stmt, (session["username"],))
+    rows = cur.fetchone()
 
-        ## Retrieve Info Then Update DB (Will Do Tomorrow)
-    elif request.form['submit_button'] == "Save & Submit" :
-        acceptanceForm = request.files['acceptanceForm"']
-        parentAckForm = request.files['parentAckForm']
-        indemnityLetter = request.files['indemnityLetter']
-        hiredEvidence = request.files['hiredEvidence']
+    select_stmt_sv = "SELECT * FROM Supervisor WHERE suvID = %s"
+    cur.execute(select_stmt_sv, (rows[10],))
+    sv_rows = cur.fetchone()
 
-        ## Upload To DB (File Name) -> Send To S3 (Will Do Tomorrow)
+    cur.close()
 
+    if request.is_json:
+        cur = conn.cursor()
+        select_stmt = "SELECT * FROM Supervisor WHERE suvName = %s"
+        cur.execute(select_stmt, (request.args.get('ucSupervisorName'),))
+        rows = cur.fetchone()
+        cur.close()
 
-    return render_template('profile.html')
+        return jsonify({'ucSupervisorEmail':rows[2].lower()})
+
+    if request.method == 'POST':
+        if request.form['submit_button'] == 'Update':
+            print("Hello I'M HERE")
+            ucSupervisorName = request.form['ucSupervisorName1']
+
+            update_stmt = "UPDATE Student SET studSv = %s WHERE studEmail = %s"
+            select_stmt = "SELECT suvID FROM Supervisor WHERE suvName = %s"
+            cur = conn.cursor()
+            cur.execute(select_stmt, (ucSupervisorName,))
+            rows = cur.fetchone()
+            cur.execute(update_stmt, (rows[0], session["username"]))
+            conn.commit()
+            cur.close()
+
+            return redirect(url_for('profile'))
+
+            ## Retrieve Info Then Update DB (Will Do Tomorrow)
+        elif request.form['submit_button'] == "Save & Submit" :
+            acceptanceForm = request.files['acceptanceForm"']
+            parentAckForm = request.files['parentAckForm']
+            indemnityLetter = request.files['indemnityLetter']
+            hiredEvidence = request.files['hiredEvidence']
+
+            ## Upload To DB (File Name) -> Send To S3 (Will Do Tomorrow)
+
+    return render_template('profile.html', rows = rows, sv_rows = sv_rows)
 
 if __name__ == "__main__":
     app.run(debug=True)

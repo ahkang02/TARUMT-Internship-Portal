@@ -1,10 +1,10 @@
 import uuid 
 
-S3_BUCKET_NAME = "s3-bucket-name"
-RDS_HOST_ENDPOINT = "rds-host-endpoint"
-RDS_LOGIN = "rds-login"
-RDS_PASS = "rds-pass"
-AWS_REGION = "aws-region"
-DB_INSTANCE_NAME = "db-instance-name"
+S3_BUCKET_NAME = "tarumt-intern-s3"
+RDS_HOST_ENDPOINT = "internship-db.cycv5cfdwxop.us-east-1.rds.amazonaws.com"
+RDS_LOGIN = "aws_user"
+RDS_PASS = "BAIT3273"
+AWS_REGION =  "us-east-1"
+DB_INSTANCE_NAME = "tarumt_internDB"
 DB_PORT = 3306 
 SECRET_KEY = uuid.uuid4().hex

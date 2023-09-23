@@ -2,7 +2,7 @@
 block content %}
 
 <div class="container body-content my-3">
-  <h2>Welcome : CHONG ZHI HONG</h2>
+  <h2>Welcome : {{ rows[1] }}</h2>
   <span>Upload Report</span>
   <span> | View</span>
   <form action="{{url_for('profile')}}" method="POST">
@@ -16,7 +16,7 @@ block content %}
           <div class="mb-3 row">
             <label for="staticEmail" class="col-sm-2 col-form-label">Cohort</label>
             <div class="col-sm-10">
-              <label for="staticEmail" class="col-sm-2 col-form-label">2020 MAY INTAKE</label>
+              <label for="staticEmail" class="col-sm-2 col-form-label">{{ rows[5]}}</label>
             </div>
           </div>
           <div class="mb-3 row">
@@ -49,25 +49,25 @@ block content %}
           <div class="mb-3 row">
             <label for="staticEmail" class="col-sm-2 col-form-label">Student Name</label>
             <div class="col-sm-10">
-              <label for="staticEmail" class="col-sm-2 col-form-label">Student Name</label>
+              <label for="staticEmail" class="col-sm-2 col-form-label">{{ rows[1] }}</label>
             </div>
           </div>
           <div class="mb-3 row">
             <label for="inputPassword" class="col-sm-2 col-form-label">Student ID</label>
             <div class="col-sm-10">
-              <label for="inputPassword" class="col-sm-2 col-form-label">Student ID</label>
+              <label for="inputPassword" class="col-sm-2 col-form-label">{{ rows[2] }}</label>
             </div>
           </div>
           <div class="mb-3 row">
             <label for="staticEmail" class="col-sm-2 col-form-label">NRIC No.</label>
             <div class="col-sm-10">
-              <label for="staticEmail" class="col-sm-2 col-form-label">NRIC No.</label>
+              <label for="staticEmail" class="col-sm-2 col-form-label">{{ rows[3] }}</label>
             </div>
           </div>
           <div class="mb-3 row">
             <label for="inputPassword" class="col-sm-2 col-form-label">Gender</label>
             <div class="col-sm-10">
-              <label for="inputPassword" class="col-sm-2 col-form-label">Male/Female</label>
+              <label for="inputPassword" class="col-sm-2 col-form-label">{{ rows[4] }}</label>
             </div>
           </div>
         </div>
@@ -82,13 +82,13 @@ block content %}
           <div class="mb-3 row">
             <label for="staticEmail" class="col-sm-2 col-form-label">UC Supervisor Name</label>
             <div class="col-sm-10">
-              <input type="text" class="form-control" id="staticEmail" value="Previous UC Name" name="ucSupervisorName">
+              <input type="text" class="form-control" id="ucSupervisorName" value="{{sv_rows[1]}}" name="ucSupervisorName1">
             </div>
           </div>
           <div class="mb-3 row">
             <label for="email" class="col-sm-2 col-form-label">UC Supervisor Email</label>
             <div class="col-sm-10">
-              <input type="email" disabled class="form-control" id="ucSupervisorEmail" name="ucSupervisorEmail">
+              <input type="email" disabled class="form-control" id="ucSupervisorEmail" name="ucSupervisorEmail" value="{{sv_rows[2]}}">
             </div>
           </div>
           <div class="mb-3 row">
@@ -175,4 +175,21 @@ block content %}
     </div>
   </form>
 </div>
+<script>
+
+  $('#ucSupervisorName').change(function() {
+    $.ajax({
+      url: '',
+      type: 'get',
+      contentType: 'application/json',
+      data: {
+        ucSupervisorName: $(this).val()
+      },
+      success: function(response) {
+        $('#ucSupervisorEmail').val(response.ucSupervisorEmail);
+      }
+    })
+  })
+  </script>
+
 {% endblock %}
