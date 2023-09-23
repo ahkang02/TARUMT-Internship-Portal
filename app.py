@@ -40,6 +40,26 @@ def process_level():
         elif request.args.get('level') == "Diploma":
             return jsonify(data_dict["Diploma"])
 
+@app.route('/process_company', methods=['GET'])
+def process_company():
+    if request.is_json:
+        cur = conn.cursor()
+        select_stmt = "SELECT compName, compAddress1, compAddress2 FROM Company"
+        cur.execute(select_stmt)
+        rows = cur.fetchall()
+        cur.close()
+        return jsonify(rows)
+
+@app.route('/process_address', methods=['GET'])
+def process_address():
+    if request.is_json:
+        cur = conn.cursor()
+        select_stmt = "SELECT compAddress1, compAddress2 FROM Company WHERE compName = %s"
+        cur.execute(select_stmt, (request.args.get('companyName'),))
+        rows = cur.fetchone()
+        cur.close()
+        return jsonify(rows)
+
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
 
@@ -153,7 +173,6 @@ def profile():
 
     if request.method == 'POST':
         if request.form['submit_button'] == 'Update':
-            print("Hello I'M HERE")
             ucSupervisorName = request.form['ucSupervisorName1']
 
             update_stmt = "UPDATE Student SET studSv = %s WHERE studEmail = %s"
