@@ -101,13 +101,13 @@ def signup():
         studNetworkingSkills = request.form["studNetworkingSkills"]
 
         select_stmt = "SELECT suvID FROM Supervisor WHERE suvName = %s"
-        insert_sql = "INSERT INTO Student VALUES (%s, %s, %s,%s, %s, %s,%s, %s, %s,%s, %s, %s,%s, %s, %s,%s, %s, %s,%s, %s, %s, %s, %s, %s)"
+        insert_sql = "INSERT INTO Student VALUES (%s, %s, %s,%s, %s, %s,%s, %s, %s,%s, %s, %s,%s, %s, %s,%s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s)"
         try:
             cur = conn.cursor()
             cur.execute(select_stmt, (studentSupervisor,))
             rows = cur.fetchone()
             print(rows)
-            cur.execute(insert_sql, (None, studFullName, studID, studIC, studGender, cohort, level, programme, studEmail, studCGPA, rows[0], studTransport, studHealthRemark, studPersonalEmail, studTermAddress, studPermanentAddress, studMobileNumber, studFixedNumber, studTechnicalSkills, studDatabaseSkills, studNetworkingSkills, None, None, tutGrp))
+            cur.execute(insert_sql, (None, studFullName, studID, studIC, studGender, cohort, level, programme, studEmail, studCGPA, rows[0], studTransport, studHealthRemark, studPersonalEmail, studTermAddress, studPermanentAddress, studMobileNumber, studFixedNumber, studTechnicalSkills, studDatabaseSkills, studNetworkingSkills, None, None, tutGrp, None, None, None))
             conn.commit()
             cur.close()
         
@@ -121,6 +121,9 @@ def signup():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+
+    if "username" in session:
+        return redirect(url_for('profile'))
 
     if request.method == 'POST':
         username = request.form['username']
@@ -139,9 +142,7 @@ def login():
         return redirect(url_for('profile'))
     
     else:
-        if "user" in session:
-            return redirect(url_for('profile'))
-    return render_template('login.html')
+        return render_template('login.html')
     
 
 @app.route('/logout', methods=['GET', 'POST'])
@@ -149,8 +150,14 @@ def logout():
     session.pop("username", None)
     return redirect(url_for('index'))
 
+@app.route('/submitReport', methods=['GET', 'POST'])
+def submitReport():
+
+    return render_template('submitReport.html')
+
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
+
     cur = conn.cursor()
     select_stmt = "SELECT * FROM Student WHERE studEmail = %s"
     cur.execute(select_stmt, (session["username"],))
@@ -160,7 +167,12 @@ def profile():
     cur.execute(select_stmt_sv, (rows[10],))
     sv_rows = cur.fetchone() 
 
+    select_stmt_comp = "SELECT * FROM Company WHERE compID = %s"
+    cur.execute(select_stmt_comp, (rows[22],))
+    comp_rows = cur.fetchone()
     cur.close()
+    
+
 
     if request.is_json:
         cur = conn.cursor()
@@ -188,32 +200,47 @@ def profile():
 
             ## Retrieve Info Then Update DB (Will Do Tomorrow)
         elif request.form['submit_button'] == "Submit" :
-            print("Submit")
-            acceptanceForm = request.files['file']
-            print(acceptanceForm.filename)
-            #companyName = request.form['companyName']
 
-            #select_stmt = "SELECT compID FROM Company WHERE compName = %s"
-            #update_stmt = "UPDATE Student SET companyID = %s WHERE studEmail = %s"
+            ### Storing Company Info of a Students
+            companyName = request.form['companyName']
+            select_stmt = "SELECT compID FROM Company WHERE compName = %s"
+            update_stmt = "UPDATE Student SET companyID = %s WHERE studEmail = %s"
 
-            #cur = conn.cursor()
-            #cur.execute(select_stmt, (companyName,))
-            #rows = cur.fetchone()
-            #cur.execute(update_stmt, (rows[0], session["username"]))
-            #conn.commit()
-            #cur.close()
+            cur = conn.cursor()
+            cur.execute(select_stmt, (companyName,))
+            rows = cur.fetchone()
+            cur.execute(update_stmt, (rows[0], session["username"]))
+            conn.commit()
+            cur.close()
 
- 
-            #parentAckForm = request.files['parentAckForm']
-            #indemnityLetter = request.files['indemnityLetter']
-            #hiredEvidence = request.files['hiredEvidence']
+            monthlyAllowance = request.form['monthlyAllowance']
+            companySvName = request.form['comSvName']
+            companySvEmail = request.form['comSvEmail']
 
-            ## Upload Files to S3
-            s3 = boto3.resource('s3')
+            update_stmt = "UPDATE Student SET monthlyAllowance = %s, compSvName = %s, compSvEmail = %s WHERE studEmail = %s"
 
+            cur = conn.cursor()
+            cur.execute(update_stmt, (monthlyAllowance, companySvName, companySvEmail, session["username"]))
+            conn.commit()
+            cur.close()
+
+            acceptanceForm = request.files['acceptForm']
+            parentAckForm = request.files['parentAckForm']
+            indemnityLetter = request.files['indemnityLetter']
+
+            id = uuid.uuid4()
+            acceptForm_file_name_in_s3 = 'acceptanceForm' + str(id) + "-form_files"
+            parentAckForm_file_name_in_s3 = 'parentAckForm' + str(id) + "-form_files"
+            indemnityLetter_file_name_in_s3 = 'indemnityLetter' + str(id) + "-form_files"
+
+            s3 = boto3.resource('s3') 
             try:
-                print("Uploading to S3")
-                s3.Bucket(S3_BUCKET_NAME).put_object(Key=acceptanceForm.filename, Body=acceptanceForm)
+                print("Data inserted in MySQL RDS... uploading image to S3...")
+
+                s3.Bucket(S3_BUCKET_NAME).put_object(Key=acceptForm_file_name_in_s3, Body=acceptanceForm)
+                s3.Bucket(S3_BUCKET_NAME).put_object(Key=parentAckForm_file_name_in_s3, Body=parentAckForm)
+                s3.Bucket(S3_BUCKET_NAME).put_object(Key=indemnityLetter_file_name_in_s3, Body=indemnityLetter)
+
                 bucket_location = boto3.client('s3').get_bucket_location(Bucket=S3_BUCKET_NAME)
                 s3_location = (bucket_location['LocationConstraint'])
 
@@ -221,12 +248,42 @@ def profile():
                     s3_location = ''
                 else:
                     s3_location = '-' + s3_location
-                
-                object_url = "https://s3{0}.amazonaws.com/{1}/{2}".format(
+
+                accept_object_url = "https://s3{0}.amazonaws.com/{1}/{2}".format(
                     s3_location,
                     S3_BUCKET_NAME,
-                    acceptanceForm.filename
-                )
+                    acceptForm_file_name_in_s3)
+                
+                parent_object_url = "https://s3{0}.amazonaws.com/{1}/{2}".format(
+                    s3_location,
+                    S3_BUCKET_NAME,
+                    parentAckForm_file_name_in_s3)
+                
+                indemnity_object_url = "https://s3{0}.amazonaws.com/{1}/{2}".format(
+                    s3_location,
+                    S3_BUCKET_NAME,
+                    indemnityLetter_file_name_in_s3)
+                
+                cur = conn.cursor()
+                insert_stmt = "INSERT INTO Form Values (%s, %s, %s, %s, %s, %s)"
+                cur.execute(insert_stmt, (None, parent_object_url, accept_object_url, indemnity_object_url, None, None))
+                conn.commit()
+                cur.close()
+
+                cur = conn.cursor()
+                select_stmt = "SELECT * FROM Form WHERE companyAcceptanceForm=%s"
+                cur.execute(select_stmt, (accept_object_url,))
+                rows = cur.fetchone()
+                cur.close()
+
+                cur = conn.cursor()
+                update_stmt = "UPDATE Student SET formID = %s WHERE studEmail = %s"
+                cur.execute(update_stmt, (rows[0], session["username"]))
+                conn.commit()
+                cur.close()
+                
+              
+
             except Exception as e:
                 print("Error: ", e)
 
@@ -235,7 +292,7 @@ def profile():
 
             ## Upload To DB (File Name) -> Send To S3 (Will Do Tomorrow)
 
-    return render_template('profile.html', rows = rows, sv_rows = sv_rows)
+    return render_template('profile.html', rows = rows, sv_rows = sv_rows, comp_rows = comp_rows)
 
 if __name__ == "__main__":
     app.run(debug=True)
