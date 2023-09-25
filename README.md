@@ -39,20 +39,23 @@ To set up the TARUMT-Internship Portal locally, follow these steps:
 
 2. Create a virtual environment:
 
-   ```python -m venv venv
+   ```sh
+   python -m venv venv
    ```
 
 3. Activate the virtual environment:
    On Windows:
-   ```venv\Scripts\activate
+   ```sh
+   venv\Scripts\activate
    ```
 
    On macOS and Linux:
-   ```source venv/bin/activate
+   ```sh
+   source venv/bin/activate
    ```
 
-4. Install all the necessary packages:
-   ```
+5. Install all the necessary packages:
+   ```sh
    pip install -r requirements.txt
    ```
 
