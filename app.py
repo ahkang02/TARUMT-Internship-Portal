@@ -153,6 +153,55 @@ def logout():
 @app.route('/submitReport', methods=['GET', 'POST'])
 def submitReport():
 
+    if request.method == 'POST':
+
+        progressReport = request.files['progressReport']
+        finalReport = request.files['finalReport']
+        id = uuid.uuid4()
+        progressReport_file_name_in_s3 = 'progressReport' + str(id) + "-form_files"
+        finalReport_file_name_in_s3 = 'finalReport' + str(id) + "-form_files"
+
+        s3 = boto3.resource('s3')
+        try:
+                print("Data inserted in MySQL RDS... uploading image to S3...")
+
+                s3.Bucket(S3_BUCKET_NAME).put_object(Key=progressReport_file_name_in_s3, Body=progressReport)
+                s3.Bucket(S3_BUCKET_NAME).put_object(Key=finalReport_file_name_in_s3, Body=finalReport)
+
+                bucket_location = boto3.client('s3').get_bucket_location(Bucket=S3_BUCKET_NAME)
+                s3_location = (bucket_location['LocationConstraint'])
+
+                if s3_location is None:
+                    s3_location = ''
+                else:
+                    s3_location = '-' + s3_location
+
+                progressReport_url = "https://s3{0}.amazonaws.com/{1}/{2}".format(
+                    s3_location,
+                    S3_BUCKET_NAME,
+                    progressReport_file_name_in_s3)
+                
+                finalReport_url = "https://s3{0}.amazonaws.com/{1}/{2}".format(
+                    s3_location,
+                    S3_BUCKET_NAME,
+                    finalReport_file_name_in_s3)
+                
+                cur = conn.cursor()
+                select_stmt = "SELECT formID FROM Student WHERE studEmail = %s"
+                cur.execute(select_stmt, (session["username"],))
+                rows = cur.fetchone()
+                cur.close()
+
+                cur = conn.cursor()
+                update_stmt = "UPDATE Form SET progressReport = %s, finalReport = %s WHERE formID = %s"
+                cur.execute(update_stmt, (progressReport_url, finalReport_url, rows[0]))
+                cur.commit()
+                cur.close()
+           
+
+        except Exception as e:
+                print("Error: ", e)
+
     return render_template('submitReport.html')
 
 @app.route('/profile', methods=['GET', 'POST'])

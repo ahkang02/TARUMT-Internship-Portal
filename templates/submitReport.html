@@ -3,7 +3,7 @@
     
     <div class="container body-content my-3">
       <h2>Welcome : {{ rows[1] }}</h2>
-      <span>Upload Report</span>
+      <span><a href="{{url_for('submitReport')}}"><i class="fa fa-id-card-o"></i> Upload Report</a></span>
       <span> | View</span>
       <form action="{{url_for('profile')}}" method="POST" enctype="multipart/form-data">
         <hr />
