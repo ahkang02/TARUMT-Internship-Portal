@@ -381,5 +381,40 @@ def profile():
 
     return render_template('profile.html', rows = rows, sv_rows = sv_rows, comp_rows = comp_rows)
 
+@app.route('/studentsListing')
+def studentsListing():
+    cur = conn.cursor()
+    studs = "SELECT studIDCardNum, studName FROM Student ORDER BY studID, studName"
+    cur.execute(studs)
+    rows = cur.fetchall()
+    conn.close()
+
+    return render_template('students-listing.html', rows=rows)
+
+@app.route('/studentDetails', methods=['GET'])
+def studentDetails():
+    studID = request.args.get('studID')
+    
+    cur = conn.cursor()
+    select_stmt = "SELECT * FROM Student WHERE studIDCardNum = %s"
+    cur.execute(select_stmt, (studID,))
+    rows = cur.fetchone()
+
+    select_stmt_sv = "SELECT * FROM Supervisor WHERE suvID = %s"
+    cur.execute(select_stmt_sv, (rows[10],))
+    sv_rows = cur.fetchone() 
+
+    select_stmt_comp = "SELECT * FROM Company WHERE compID = %s"
+    cur.execute(select_stmt_comp, (rows[22],))
+    comp_rows = cur.fetchone()
+    cur.close()
+
+    return render_template('student-details.html', rows = rows, sv_rows = sv_rows, comp_rows = comp_rows)
+
+
+@app.route('/companyListing')
+def companyListing():
+    return render_template('company-listing.html')
+
 if __name__ == "__main__":
     app.run(debug=True)

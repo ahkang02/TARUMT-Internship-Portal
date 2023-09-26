@@ -1,0 +1,101 @@
+{% extends "admin.html" %}
+{% block title %}TARUMT ITP Admin{% endblock %}
+{% block content %}
+<div class="container-fluid p-5">
+    <div class="row d-flex align-content-center">
+        <div class="col-md-6">
+            <p class="fs-2">All Students</p>
+        </div>
+        <div class="col-md-6 d-flex justify-content-end gap-2">
+            <div class="text-end">
+                <input type="text" id="txtSearch" class="form-control text-black" title="Search by All Fields" placeholder="Search" />
+            </div>
+        </div>
+        <hr />
+    </div>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Student ID</th>
+                <th scope="col">Student Name</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody id="studentTableBody">
+            {% for row in rows %}
+            <tr>
+                <th scope="row"></th>
+                <td><a href="{{ url_for('studentDetails', studID=row[0]) }}">{{ row[0] }}</a></td>
+                <td>{{ row[1] }}</td>
+                <td>Action</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    // Get all the rows in the table body
+    var rows = document.querySelectorAll('tbody tr');
+    var rowCounter = 1; // Initialize the row counter
+
+    // Function to update row numbers
+    function updateRowNumbers() {
+        rowCounter = 1;
+        for (var i = 0; i < rows.length; i++) {
+            var firstTd = rows[i].querySelector('th');
+            firstTd.textContent = rowCounter++;
+        }
+    }
+
+    // Function to filter rows based on search term
+    function filterRows(searchTerm) {
+        for (var i = 0; i < rows.length; i++) {
+            var row = rows[i];
+            var studentName = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
+            if (studentName.includes(searchTerm.toLowerCase())) {
+                // If the student name contains the search term, show the row
+                row.style.display = '';
+            } else {
+                // If not, hide the row
+                row.style.display = 'none';
+            }
+        }
+        updateRowNumbers(); // Update row numbers after filtering
+    }
+
+    // Get the search input element
+    var searchInput = document.getElementById('txtSearch');
+
+    // Add an input event listener to the search input
+    searchInput.addEventListener('input', function () {
+        var searchTerm = this.value.trim(); // Get the trimmed value from the input
+        if (searchTerm === '') {
+            // Reset row numbers to original order if search term is empty
+            updateRowNumbers();
+            showAllRows(); // Show all rows when the search term is empty
+        } else {
+            filterRows(searchTerm); // Call the filter function
+        }
+    });
+
+    // Function to show all rows
+    function showAllRows() {
+        rowCounter = 1; // Reset the row counter when showing all rows
+        for (var i = 0; i < rows.length; i++) {
+            rows[i].style.display = ''; // Show the row
+            // Update the row number for the displayed row
+            var firstTd = rows[i].querySelector('th');
+            firstTd.textContent = rowCounter++;
+        }
+    }
+
+    // Initialize row numbers
+    updateRowNumbers();
+</script>
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+{% endblock %}

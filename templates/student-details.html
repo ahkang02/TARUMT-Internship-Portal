@@ -1,0 +1,165 @@
+{% extends "admin.html" %}
+{% block title %}TARUMT ITP Admin{% endblock %}
+{% block content %}
+<div class="container body-content my-3">
+  <h2>Student : {{ rows[1] }}</h2>
+  <form action="{{url_for('profile')}}" method="POST" enctype="multipart/form-data" class="overflow-y-visible   ">
+    <hr />
+    <div class="panel-group mt-2 border border-light-subtle shadow">
+      <div class="panel panel-default">
+        <div class="panel-heading p-3 bg-light fw-bold ">Summary</div>
+        <div class="panel-body p-3">
+          <div class="mb-3 row">
+            <label for="staticEmail" class="col-3 col-form-label">Cohort</label>
+            <div class="col">
+              <input for="staticEmail" class="col-9 form-control " value="{{ rows[5]}}" disabled />
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <label for="inputPassword" class="col-3 col-form-label">Intern Period</label>
+            <div class="col">
+              <input for="inputPassword" class="col-9 form-control" value="25 Oct 2021 - 02 Jan 2022" disabled />
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <label for="staticEmail" class="col-3 col-form-label">Status</label>
+            <div class="col">
+              <input for="staticEmail" class="col-9 form-control" value="Pending" disabled />
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <label for="inputPassword" class="col-3 col-form-label">Remark</label>
+            <div class="col">
+              <input for="inputPassword" class="col-9 form-control" value="Intern Ended" disabled />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="panel-group mt-2 border border-light-subtle shadow">
+      <div class="panel panel-default">
+        <div class="panel-heading p-3 bg-light fw-bold ">Student Detail</div>
+        <div class="panel-body p-3">
+          <div class="mb-3 row">
+            <label for="staticEmail" class="col-3 col-form-label">Student Name</label>
+            <div class="col">
+              <input for="staticEmail" class="col-9 form-control" value="{{ rows[1]}}" disabled />
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <label for="inputPassword" class="col-3 col-form-label">Student ID</label>
+            <div class="col">
+              <input for="inputPassword" class="col-9 form-control" value="{{ rows[2]}}" disabled />
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <label for="staticEmail" class="col-3 col-form-label">NRIC No.</label>
+            <div class="col">
+              <input for="staticEmail" class="col-9 form-control" value="{{ rows[3]}}" disabled />
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <label for="inputPassword" class="col-3 col-form-label">Gender</label>
+            <div class="col">
+              <input for="inputPassword" class="col-9 form-control" value="{{ rows[4]}}" disabled />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="panel-group mt-2 border border-light-subtle shadow">
+      <div class="panel panel-default">
+        <div class="panel-heading p-3 bg-light fw-bold ">UC Supervisor</div>
+        <div class="panel-body p-3">
+          <div class="mb-3 row">
+            <label for="staticEmail" class="col-3 col-form-label">UC Supervisor Name</label>
+            <div class="col">
+              <input type="text" class="col-9 form-control" id="ucSupervisorName" value="{{sv_rows[1]}}"
+                name="ucSupervisorName1" />
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <label for="email" class="col-3 col-form-label">UC Supervisor Email</label>
+            <div class="col">
+              <input type="email" disabled class="col-9 form-control" id="ucSupervisorEmail" name="ucSupervisorEmail"
+                value="{{sv_rows[2]}}" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="panel-group mt-2 border border-light-subtle shadow">
+      <div class="panel panel-default">
+        <div class="panel-heading p-3 bg-light fw-bold ">Company Detail</div>
+        <div class="panel-body p-3">
+          <div class="mb-3 row">
+            <label for="staticEmail" class="col-3 col-form-label">Company Name</label>
+            <div class="col">
+              <select name="companyName" id="compName" class="col-9 form-select" required>
+                {% if comp_rows[0] %}
+                <option selected> {{ comp_rows[1] }} </option>
+                {% else %}
+                <option selected>-- Select One --</option>
+                {% endif %}
+              </select>
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <label for="inputPassword" class="col-3 col-form-label">Address 1</label>
+            <div class="col">
+              <textarea id="address1" class="col-9 form-control" rows="2" disabled
+                name="address-1">{{ comp_rows[2] }}</textarea>
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <label for="staticEmail" class="col-3 col-form-label">Address 2</label>
+            <div class="col">
+              <textarea id="address2" class="col-9 form-control" rows="2" disabled
+                name="address-2">{{ comp_rows[3] }}</textarea>
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <label for="inputPassword" class="col-3 col-form-label">Monthly Allowance</label>
+            <div class="col">
+              <input type="text" class="col-9 form-control" id="staticEmail" name="monthlyAllowance" required
+                value="{{rows[24]}}" />
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <label for="inputPassword" class="col-3 col-form-label">Com. Supervisor Name</label>
+            <div class="col">
+              <input type="text" class="col-9 form-control" id="staticEmail" name="comSvName" required value="{{rows[25]}}" />
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <label for="inputPassword" class="col-3 col-form-label">Com. Supervisor Email</label>
+            <div class="col">
+              <input type="text" class="col-9 form-control" id="staticEmail" name="comSvEmail" required
+                value="{{rows[26]}}" />
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <label for="inputPassword" class="col-3 col-form-label">Com. Acceptance Form</label>
+            <div class="col">
+                <a href="https://tarumt-intern-s3.s3.amazonaws.com/acceptanceForm6a985c9b-cb08-451f-b2c9-b0eaa210a569-form_files">Download</a>
+              <!--input class="col-9 form-control" type="file" id="acceptForm" name="acceptForm" required-->
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <label for="inputPassword" class="col-3 col-form-label">Parent Ack. Form</label>
+            <div class="col">
+              <input class="col-9 form-control" type="file" id="formFile" name="parentAckForm" required />
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <label for="inputPassword" class="col-3 col-form-label">Letter of Indemnity</label>
+            <div class="col">
+              <input class="col-9 form-control" type="file" id="formFile" name="indemnityLetter" required />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+{% endblock %}
