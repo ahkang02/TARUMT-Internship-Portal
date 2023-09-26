@@ -82,44 +82,65 @@ def signup():
         return jsonify({'ucSupervisorEmail':rows[2].lower()})
 
     if request.method == 'POST':
-        level = request.form['level']
-        cohort = request.form['cohort']
-        programme = request.form['programme']
-        tutGrp = request.form['tutorialGrp']
-        studID = request.form['studentID']
-        studEmail = request.form["studentEmail"]
-        studCGPA = request.form["studCGPA"]
-        studentSupervisor = request.form["ucSupervisor"]
-        studFullName = request.form["studentFullName"]
-        studIC = request.form["studIC"]
-        studGender = request.form["studGender"]
-        studTransport = request.form["studTransport"]
-        studHealthRemark = request.form["studHealthRemark"]
-        studPersonalEmail = request.form["studPersonalEmail"]
-        studTermAddress = request.form["studTermAddress"]
-        studPermanentAddress = request.form["studPermanentAddress"]
-        studMobileNumber = request.form["studMobileNumber"]
-        studFixedNumber = request.form["studFixedNumber"]
-        studTechnicalSkills = request.form["studTechnicalSkills"]
-        studDatabaseSkills = request.form["studDatabaseSkills"]
-        studNetworkingSkills = request.form["studNetworkingSkills"]
+        if request.form['submit_button'] == 'I Accept':
+            level = request.form['level']
+            cohort = request.form['cohort']
+            programme = request.form['programme']
+            tutGrp = request.form['tutorialGrp']
+            studID = request.form['studentID']
+            studEmail = request.form["studentEmail"]
+            studCGPA = request.form["studCGPA"]
+            studentSupervisor = request.form["ucSupervisor"]
+            studFullName = request.form["studentFullName"]
+            studIC = request.form["studIC"]
+            studGender = request.form["studGender"]
+            studTransport = request.form["studTransport"]
+            studHealthRemark = request.form["studHealthRemark"]
+            studPersonalEmail = request.form["studPersonalEmail"]
+            studTermAddress = request.form["studTermAddress"]
+            studPermanentAddress = request.form["studPermanentAddress"]
+            studMobileNumber = request.form["studMobileNumber"]
+            studFixedNumber = request.form["studFixedNumber"]
+            studTechnicalSkills = request.form["studTechnicalSkills"]
+            studDatabaseSkills = request.form["studDatabaseSkills"]
+            studNetworkingSkills = request.form["studNetworkingSkills"]
 
-        select_stmt = "SELECT suvID FROM Supervisor WHERE suvName = %s"
-        insert_sql = "INSERT INTO Student VALUES (%s, %s, %s,%s, %s, %s,%s, %s, %s,%s, %s, %s,%s, %s, %s,%s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s)"
-        try:
-            cur = conn.cursor()
-            cur.execute(select_stmt, (studentSupervisor,))
-            rows = cur.fetchone()
-            print(rows)
-            cur.execute(insert_sql, (None, studFullName, studID, studIC, studGender, cohort, level, programme, studEmail, studCGPA, rows[0], studTransport, studHealthRemark, studPersonalEmail, studTermAddress, studPermanentAddress, studMobileNumber, studFixedNumber, studTechnicalSkills, studDatabaseSkills, studNetworkingSkills, None, None, tutGrp, None, None, None))
-            conn.commit()
-            cur.close()
-        
-        except mariadb.Error as e:
-            print(f"Error: {e}")
-            sys.exit(1)
+            select_stmt = "SELECT suvID FROM Supervisor WHERE suvName = %s"
+            insert_sql = "INSERT INTO Student VALUES (%s, %s, %s,%s, %s, %s,%s, %s, %s,%s, %s, %s,%s, %s, %s,%s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+            try:
+                cur = conn.cursor()
+                cur.execute(select_stmt, (studentSupervisor,))
+                rows = cur.fetchone()
+                print(rows)
+                cur.execute(insert_sql, (None, studFullName, studID, studIC, studGender, cohort, level, programme, studEmail, studCGPA, rows[0], studTransport, studHealthRemark, studPersonalEmail, studTermAddress, studPermanentAddress, studMobileNumber, studFixedNumber, studTechnicalSkills, studDatabaseSkills, studNetworkingSkills, None, None, tutGrp, None, None, None))
+                conn.commit()
+                cur.close()
+            
+            except mariadb.Error as e:
+                print(f"Error: {e}")
+                sys.exit(1)
 
-        return redirect(url_for('login'))
+            return redirect(url_for('login'))
+        elif request.form['submit_button'] == 'I Decline':
+            return redirect(url_for('index'))
+        elif request.form['submit_button'] == 'Company Registration':
+            
+            companyName = request.form['companyName']
+            companyAddress1 = request.form['companyAddress1']
+            companyAddress2 = request.form['companyAddress2']
+            
+            insert_stmt = "INSERT INTO Company VALUES (%s, %s, %s, %s)"
+            try:
+                cur = conn.cursor()
+                cur.execute(insert_stmt, (None, companyName, companyAddress1, companyAddress2))
+                conn.commit()
+                cur.close()
+            
+            except mariadb.Error as e:
+                print(f"Error: {e}")
+                sys.exit(1)
+            
+            return render_template('login.html')
 
     return render_template('sign-up.html', sv_rows = sv_rows)
 
