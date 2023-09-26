@@ -6,15 +6,71 @@ block content %}
     padding-right: .75rem;
     background: none;
   }
+
+  .button-box {
+    width: fit-content;
+    margin: 35px auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    border-radius: 0px;
+    background-color: whitesmoke;
+  }
+
+  .toggle-btn {
+    padding: 10px 40px;
+    cursor: pointer;
+    background: transparent;
+    border: 0;
+    outline: none;
+    position: relative;
+    text-align: center;
+  }
+
+  #btn {
+    left: 15px;
+    position: absolute;
+    width: 110px;
+    height: 80%;
+    background: rgba(255, 255, 255, 1);
+    border-radius: 0px;
+    transition: .5s;
+  }
+
+  /* CSS for form transition */
+  .form-container {
+    transition: display 0.1s ease-in-out ,height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    height: 0 !important;
+    opacity: 0;
+    display: none;
+  }
+
+  .form-container.active {
+    height: auto !important;
+    display: block;
+    opacity: 1;
+  }
 </style>
 
 <div class="container-fluid mt-5">
   <div class="container">
-    <h1>Sign Up</h1>
+    <h1 class="text-center ">Sign Up</h1>
     <hr />
   </div>
 
-  <form action="{{url_for('signup')}}" method="post" class="needs-validation" novalidate>
+  <div class="m-auto ">
+    <div class="form-box">
+      <div class="button-box">
+        <div id="btn"></div>
+        <button type="button" class="toggle-btn" onclick="formclick()">Student</button>
+        <button type="button" class="toggle-btn" onclick="formclick()">Company</button>
+      </div>
+    </div>
+  </div>
+
+
+  <form action="{{url_for('signup')}}" method="post" class="needs-validation form-container active " id="studentForm" novalidate>
     <div class="container border border-light-subtle rounded mb-3">
       <h6 class="mt-3">Academic Detail</h6>
       <hr />
@@ -64,7 +120,7 @@ block content %}
           <label for="studentID" class="col-sm-2 col-form-label">Student ID</label>
           <div class="col-sm-10">
             <input type="text" id="studentID" name="studentID" class="form-control" placeholder="e.g: 99WMR9999"
-  pattern="^\d{2}[A-Z]{3}\d{5}$" required />
+              pattern="^\d{2}[A-Z]{3}\d{5}$" required />
             <div class="invalid-feedback">
               Please provide your student ID in the format of e.g: ##WMR#####.
             </div>
@@ -75,9 +131,9 @@ block content %}
           <div class="col-sm-10">
             <input type="email" name="studentEmail" id="studentEmail" class="form-control"
               placeholder="e.g: xxx-xx99@student.tarc.edu.my" required />
-              <div class="invalid-feedback">
-                Please provide your student email.
-              </div>
+            <div class="invalid-feedback">
+              Please provide your student email.
+            </div>
           </div>
         </div>
         <div class="mb-3 row">
@@ -85,15 +141,15 @@ block content %}
           <div class="col-sm-10">
             <input type="text" name="studCGPA" id="studCGPA" class="form-control" placeholder=" e.g: 1.0 - 4.0"
               required />
-              <div class="invalid-feedback">
-                Please provide your current CGPA.
-              </div>
+            <div class="invalid-feedback">
+              Please provide your current CGPA.
+            </div>
           </div>
         </div>
         <div class="mb-3 row">
           <label for="ucSupervisorName" class="col-sm-2 col-form-label">UC Supervisor</label>
           <div class="col-sm-10">
-            <select name="ucSupervisor" id="ucSupervisorName" class="form-select">
+            <select name="ucSupervisor" id="ucSupervisorName" class="form-select" required>
               <option value="" selected disabled hidden>-- Select One --</option>
               {% for ucSupervisor in sv_rows %}
               <option value="{{ucSupervisor[1]}}">{{ucSupervisor[1]}}</option>
@@ -119,15 +175,16 @@ block content %}
           <div class="col-sm-10">
             <input type="text" name="studentFullName" id="studentFullName" class="form-control"
               placeholder="Name As in NRIC" required />
-              <div class="invalid-feedback">
-                Please provide your fullname.
-              </div>
+            <div class="invalid-feedback">
+              Please provide your fullname.
+            </div>
           </div>
         </div>
         <div class="mb-3 row">
           <label for="studIC" class="col-sm-2 col-form-label">NRIC</label>
           <div class="col-sm-10">
-            <input type="text" name="studIC" id="studIC" class="form-control" placeholder="e.g: ######-##-####"  pattern="^\d{6}-\d{2}-\d{4}$" required />
+            <input type="text" name="studIC" id="studIC" class="form-control" placeholder="e.g: ######-##-####"
+              pattern="^\d{6}-\d{2}-\d{4}$" required />
             <div class="invalid-feedback">
               Please provide your IC number in the format of e.g: ######-##-####.
             </div>
@@ -174,9 +231,9 @@ block content %}
           <div class="col-sm-10">
             <input type="email" name="studPersonalEmail" id="studPersonalEmail" class="form-control"
               placeholder="e.g: xxx-xx99@gmail.com" required />
-              <div class="invalid-feedback">
-                Please provide your personal email in the format of e.g: xxx-xx99@gmail.com.
-              </div>
+            <div class="invalid-feedback">
+              Please provide your personal email in the format of e.g: xxx-xx99@gmail.com.
+            </div>
           </div>
         </div>
         <div class="mb-3 row">
@@ -184,9 +241,9 @@ block content %}
           <div class="col-sm-10">
             <textarea class="form-control" id="studTermAddress" rows="2" placeholder="Current Term Address"
               name="studTermAddress" required></textarea>
-              <div class="invalid-feedback">
-                Please provide your term address.
-              </div>
+            <div class="invalid-feedback">
+              Please provide your term address.
+            </div>
           </div>
         </div>
         <div class="mb-3 row">
@@ -194,9 +251,9 @@ block content %}
           <div class="col-sm-10">
             <textarea class="form-control" id="studPermanentAddress" rows="2" placeholder="Hometown Address"
               name="studPermanentAddress" required></textarea>
-              <div class="invalid-feedback">
-                Please provide your permanent address.
-              </div>
+            <div class="invalid-feedback">
+              Please provide your permanent address.
+            </div>
           </div>
         </div>
         <div class="mb-3 row">
@@ -204,9 +261,9 @@ block content %}
           <div class="col-sm-10">
             <input type="text" id="studMobileNumber" class="form-control" placeholder="e.g: 012-3456789"
               name="studMobileNumber" pattern="^01\d-\d{7,8}$" required />
-              <div class="invalid-feedback">
-                Please provide your mobile number in the format of e.g: 012-3456789.
-              </div>
+            <div class="invalid-feedback">
+              Please provide your mobile number in the format of e.g: 012-3456789.
+            </div>
           </div>
         </div>
         <div class="mb-3 row">
@@ -214,9 +271,9 @@ block content %}
           <div class="col-sm-10">
             <input type="text" id="studFixedNumber" class="form-control no-validate" placeholder="e.g: 03-123456789"
               name="studFixedNumber" pattern="^\d{2,3}-\d{7,8}$" />
-              <div class="invalid-feedback">
-                Please provide your house number in the format of e.g: 03-123456789.
-              </div>
+            <div class="invalid-feedback">
+              Please provide your house number in the format of e.g: 03-123456789.
+            </div>
           </div>
         </div>
       </div>
@@ -235,8 +292,8 @@ block content %}
         <div class="mb-3 row">
           <label for="studDatabaseSkills" class="col-sm-2 col-form-label">Database Knowledge</label>
           <div class="col-sm-10">
-            <textarea class="form-control no-validate" id="studDatabaseSkills" rows="2" placeholder="Describe your database skills"
-              name="studDatabaseSkills"></textarea>
+            <textarea class="form-control no-validate" id="studDatabaseSkills" rows="2"
+              placeholder="Describe your database skills" name="studDatabaseSkills"></textarea>
           </div>
         </div>
         <div class="mb-3 row">
@@ -258,10 +315,71 @@ block content %}
           TIMES DURING THE WHOLE DURATION OF THE INDUSTRIAL TRAINING PROGRAMME.</p>
         <div class="mb-3 row justify-content-center">
           <div class="col-sm  text-end">
-            <button id="acceptBtn" class="btn btn-success" type="Submit" name="submit_button" value="I Accept">I Accept</button>
+            <button id="acceptBtn" class="btn btn-success" type="Submit" name="submit_button" value="I Accept">I
+              Accept</button>
           </div>
           <div class="col-sm">
-            <button id="declineBtn" class="btn btn-danger">I Decline</button>
+            <a href="{{ url_for('index') }}" id="declineBtn" class="btn btn-danger">I Decline</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <form  action="{{url_for('signup')}}" method="post" class="needs-validation form-container" id="companyForm" novalidate>
+    <div class="container border border-light-subtle rounded mb-3">
+      <h6 class="mt-3">Company Data</h6>
+      <hr />
+      <div class="container">
+        <div class="mb-3 row">
+          <label for="companyName" class="col-sm-2 col-form-label">Company Name</label>
+          <div class="col-sm-10">
+            <input type="text" name="companyName" id="companyName" class="form-control"
+              placeholder="Name of the company" required />
+            <div class="invalid-feedback">
+              Please provide your company name.
+            </div>
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="companyAddress1" class="col-sm-2 col-form-label">Company Address 1</label>
+          <div class="col-sm-10">
+            <input type="text" name="companyAddress1" id="companyAddress1" class="form-control" placeholder="Address" required />
+            <div class="invalid-feedback">
+              Please enter your company address.
+            </div>
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="companyAddress2" class="col-sm-2 col-form-label">Company Address 2</label>
+          <div class="col-sm-10">
+            <input type="text" name="companyAddress2" id="companyAddress2" class="form-control" placeholder="Address" required />
+            <div class="invalid-feedback">
+              Please enter your company address.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container border border-light-subtle rounded mb-3">
+      <h6 class="mt-3">Declarations</h6>
+      <hr />
+      <div class="container">
+        <p class="text-danger text-uppercase">I understand that by registering my company, I am committing to providing valuable internship opportunities 
+          to students enrolled in the Industrial Training Programme. I agree to adhere to the rules and regulations set forth by the 
+          University College and any relevant authorities during the entire duration of the internship program. I will ensure a safe and 
+          productive working environment for the participating students, providing them with the necessary guidance and support during their 
+          internship. I will cooperate with the University College to facilitate the assessment and evaluation of students' performance 
+          during their internship period. I acknowledge that the successful completion of the internship program by students is a 
+          requirement for their academic course, and I will actively contribute to their learning and development.
+          </p>
+        <div class="mb-3 row justify-content-center">
+          <div class="col-sm  text-end">
+            <button id="acceptBtn2" class="btn btn-success" name="submit_button" value="Company Registration">I
+              Accept</button>
+          </div>
+          <div class="col-sm">
+            <a href="{{ url_for('index') }}" id="declineBtn" class="btn btn-danger">I Decline</a>
           </div>
         </div>
       </div>
@@ -308,7 +426,28 @@ block content %}
       'use strict';
 
       var acceptBtn = document.getElementById('acceptBtn');
-      var form = document.querySelector('.needs-validation');
+      var form = document.getElementById('studentForm');
+
+      if (acceptBtn && form) {
+        acceptBtn.addEventListener('click', function (event) {
+          if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+          } else {
+            console.log('enter');
+            form.submit();
+          }
+          form.classList.add('was-validated');
+        });
+      }
+
+    })();
+
+    (function () {
+      'use strict';
+
+      var acceptBtn = document.getElementById('acceptBtn2');
+      var form = document.getElementById('companyForm');
 
       if (acceptBtn && form) {
         acceptBtn.addEventListener('click', function (event) {
@@ -326,10 +465,37 @@ block content %}
     })();
 
     function capitalizeText(element) {
-    var inputElement = element;
-    var inputValue = inputElement.value;
-    inputElement.value = inputValue.toUpperCase();
-}
+      var inputElement = element;
+      var inputValue = inputElement.value;
+      inputElement.value = inputValue.toUpperCase();
+    }
+
+
+
+    const form1 = document.getElementById('studentForm');
+    const form2 = document.getElementById('companyForm');
+    let activeForm = form1;
+    var btn = document.getElementById('btn');
+
+    function formclick() {
+
+      if(activeForm === form2){
+      btn.style.left = '15px';
+      activeForm.classList.remove('active');
+      activeForm = activeForm === form1 ? form2 : form1;
+      activeForm.classList.add('active');
+      }else{
+        btn.style.left = '155px';
+      activeForm.classList.remove('active');
+      activeForm = activeForm === form2 ? form1 : form2;
+      activeForm.classList.add('active');
+      }
+    }
+
+  
+
+
+
   </script>
 
   {% endblock %}

@@ -3,8 +3,9 @@
     
     <div class="container body-content my-3">
       <h2>Welcome : {{ rows[1] }}</h2>
-      <span><a href="{{url_for('submitReport')}}"><i class="fa fa-id-card-o"></i> Upload Report</a></span>
-      <span> | View</span>
+      <a href="{{url_for('submitReport')}}" class="text-black text-decoration-none"><span><i class="fa fa-id-card-o"></i> Upload Report</span></a>
+      |
+      <a href="{{url_for('profile')}}" class="text-black text-decoration-none text-muted "><span>View</span></a>
       <form action="{{url_for('profile')}}" method="POST" enctype="multipart/form-data">
         <hr />
         <div class="panel-group mt-2 border border-light-subtle shadow">
@@ -40,8 +41,8 @@
                 </div>
               </div>
               <div class="mb-3 row">
-                <div class="col-sm-2">
-                  <input type="submit" value="Submit" name="submit_button" />
+                <div class="col d-flex  justify-content-end me-2">
+                  <input class="btn btn-primary " type="submit" value="Submit" name="submit_button" />
                 </div>
               </div>
             </div>

@@ -128,7 +128,6 @@ def signup():
             companyName = request.form['companyName']
             companyAddress1 = request.form['companyAddress1']
             companyAddress2 = request.form['companyAddress2']
-            
             insert_stmt = "INSERT INTO Company VALUES (%s, %s, %s, %s)"
             try:
                 cur = conn.cursor()
