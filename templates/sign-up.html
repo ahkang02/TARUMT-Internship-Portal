@@ -94,7 +94,7 @@ block content %}
           <label for="ucSupervisorName" class="col-sm-2 col-form-label">UC Supervisor</label>
           <div class="col-sm-10">
             <select name="ucSupervisor" id="ucSupervisorName" class="form-select">
-              <option value="" selected>-- Select One --</option>
+              <option value="" selected disabled hidden>-- Select One --</option>
               {% for ucSupervisor in sv_rows %}
               <option value="{{ucSupervisor[1]}}">{{ucSupervisor[1]}}</option>
               {% endfor %}
