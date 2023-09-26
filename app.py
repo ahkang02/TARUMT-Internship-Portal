@@ -29,7 +29,7 @@ cur = conn.cursor()
 def index():
     return render_template('index.html')
 
-### Processing Ajax Request ###
+### Processing AJAX Request ###
 @app.route('/process_level', methods=['GET'])
 def process_level():
     if request.is_json:
@@ -67,10 +67,6 @@ def process_address():
 def signup():
 
     if request.is_json:
-        SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
-        json_url = os.path.join(SITE_ROOT, "static/json", "StaffDataDB.json")
-        data_dict = json.load(open(json_url))
-
         cur = conn.cursor()
         select_stmt = "SELECT * FROM Supervisor WHERE suvName = %s"
         cur.execute(select_stmt, (request.args.get('ucSupervisorName'),))
@@ -125,9 +121,6 @@ def signup():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 
-    if "username" in session:
-        return redirect(url_for('profile'))
-
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -142,9 +135,15 @@ def login():
 
         if username == rows[8] and password == rows[3]:
             session["username"] = username
-        return redirect(url_for('profile'))
+            return redirect(url_for('profile'))
+        else:
+            error_msg = "Invalid Username or Password"
+            return render_template('login.html', error_msg = error_msg)
+    
     
     else:
+        if "username" in session:
+            return redirect(url_for('profile'))
         return render_template('login.html')
     
 ### Logout Starts Here ###
@@ -286,13 +285,17 @@ def profile():
             parentAckForm = request.files['parentAckForm']
             indemnityLetter = request.files['indemnityLetter']
 
+            ### Setting Random IDs to the Files
             id = uuid.uuid4()
             acceptForm_file_name_in_s3 = 'acceptanceForm' + str(id) + "-form_files"
             parentAckForm_file_name_in_s3 = 'parentAckForm' + str(id) + "-form_files"
             indemnityLetter_file_name_in_s3 = 'indemnityLetter' + str(id) + "-form_files"
 
+            ### Calling S3 Bucket API
             s3 = boto3.resource('s3') 
             try:
+
+                ### Upload to S3 Bucket Starts Here
                 print("Data inserted in MySQL RDS... uploading image to S3...")
 
                 s3.Bucket(S3_BUCKET_NAME).put_object(Key=acceptForm_file_name_in_s3, Body=acceptanceForm)
@@ -322,6 +325,7 @@ def profile():
                     S3_BUCKET_NAME,
                     indemnityLetter_file_name_in_s3)
                 
+                ### Storing Forms Info & Updating Students Form ID Starts Here
                 cur = conn.cursor()
                 insert_stmt = "INSERT INTO Form Values (%s, %s, %s, %s, %s, %s)"
                 cur.execute(insert_stmt, (None, parent_object_url, accept_object_url, indemnity_object_url, None, None))
@@ -340,15 +344,10 @@ def profile():
                 conn.commit()
                 cur.close()
                 
-              
-
             except Exception as e:
                 print("Error: ", e)
 
             return redirect(url_for('profile'))
-
-
-            ## Upload To DB (File Name) -> Send To S3 (Will Do Tomorrow)
 
     return render_template('profile.html', rows = rows, sv_rows = sv_rows, comp_rows = comp_rows)
 
