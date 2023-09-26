@@ -153,6 +153,12 @@ def logout():
 @app.route('/submitReport', methods=['GET', 'POST'])
 def submitReport():
 
+    cur = conn.cursor()
+    select_stmt = "SELECT * FROM Student WHERE studEmail = %s"
+    cur.execute(select_stmt, (session["username"],))
+    rows = cur.fetchone()
+
+
     if request.method == 'POST':
 
         progressReport = request.files['progressReport']
@@ -202,7 +208,7 @@ def submitReport():
         except Exception as e:
                 print("Error: ", e)
 
-    return render_template('submitReport.html')
+    return render_template('submitReport.html', rows = rows)
 
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
