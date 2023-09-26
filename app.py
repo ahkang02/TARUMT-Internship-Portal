@@ -124,6 +124,8 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+        rows = None 
+        cur = conn.cursor()
 
         try:
             select_stmt = "SELECT * FROM Student WHERE studEmail = %s"
@@ -133,10 +135,11 @@ def login():
         except mariadb.Error as e:
             print(f"Error: {e}")
 
-        if username == rows[8] and password == rows[3]:
+        if rows is not None and password == rows[3]:
             session["username"] = username
             return redirect(url_for('profile'))
         else:
+            print('enter invalid')
             error_msg = "Invalid Username or Password"
             return render_template('login.html', error_msg = error_msg)
     

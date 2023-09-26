@@ -1,394 +1,331 @@
 {% extends "base.html"%} {% block title %}TARUMT ITP Portal{% endblock %} {%
 block content %}
+<style>
+  .form-control.no-validate:valid {
+    border-color: #ced4da;
+    padding-right: .75rem;
+    background: none;
+  }
+</style>
+
 <div class="container-fluid mt-5">
   <div class="container">
     <h1>Sign Up</h1>
     <hr />
   </div>
 
-  <form action="{{url_for('signup')}}" method="post">
-  <div class="container border border-light-subtle rounded mb-3">
-    <h6 class="mt-3">Academic Detail</h6>
-    <hr />
-    <div class="container">
-      <div class="mb-3 row">
-        <label for="staticEmail" class="col-sm-2 col-form-label">Level</label>
-        <div class="col-sm-10">
-          <select
-            id="level"
-            class="form-select"
-            aria-label="Default select example" name="level" required
-          >
-            <option selected>-- Select One --</option>
-            <option value="Diploma">Diploma</option>
-            <option value="Bachelor">Bachelor</option>
-          </select>
-        </div>
-      </div>
-      <div class="mb-3 row">
-        <label for="inputPassword" class="col-sm-2 col-form-label"
-          >Cohort</label
-        >
-        <div class="col-sm-10">
-          <select class="form-select" aria-label="Default select example" name="cohort" required>
-            <option selected>-- Select One --</option>
-            <option value="2020 May Intake">2020 May Intake</option>
-            <option value="2021 June Intake">2021 June Intake</option>
-            <option value="2022 June Intake">2022 June Intake</option>
-            <option value="2023 June Intake">2023 June Intake</option>
-          </select>
-        </div>
-      </div>
-      <div class="mb-3 row">
-        <label for="inputPassword" class="col-sm-2 col-form-label"
-          >Programme</label
-        >
-        <div class="col-sm-10">
-          <select
-            id="programme"
-            class="form-select"
-            aria-label="Default select example" name="programme" required
-          >
-            <option selected>-- Select One --</option>
-          </select>
-        </div>
-      </div>
-      <div class="mb-3 row">
-        <label for="inputPassword" class="col-sm-2 col-form-label"
-          >Tutorial Group</label
-        >
-        <div class="col-sm-10" required>
-          <input
-            type="text"
-            name="tutorialGrp"
-            id=""
-            class="form-control"
-            placeholder=" e.g: 1 - 5"
-          />
-        </div>
-      </div>
-      <div class="mb-3 row">
-        <label for="inputPassword" class="col-sm-2 col-form-label"
-          >Student ID</label
-        >
-        <div class="col-sm-10">
-          <input
-            type="text"
-            name="studentID"
-            class="form-control"
-            placeholder="e.g: 99WMR9999" required
-          />
-        </div>
-      </div>
-      <div class="mb-3 row">
-        <label for="inputPassword" class="col-sm-2 col-form-label"
-          >Student Email</label
-        >
-        <div class="col-sm-10">
-          <input
-            type="email"
-            name="studentEmail"
-            id=""
-            class="form-control"
-            placeholder=" e.g: xxx-xx99@student.tarc.edu.my" required
-          />
-        </div>
-      </div>
-      <div class="mb-3 row">
-        <label for="inputPassword" class="col-sm-2 col-form-label">CGPA</label>
-        <div class="col-sm-10">
-          <input
-            type="text"
-            name="studCGPA"
-            id=""
-            class="form-control"
-            placeholder=" e.g: 1.0 - 4.0" required
-          />
-        </div>
-      </div>
-      <div class="mb-3 row">
-        <label for="inputPassword" class="col-sm-2 col-form-label"
-          >UC Supervisor</label
-        >
-        <div class="col-sm-10">
-          <input id="ucSupervisorName" type="text" name="ucSupervisor" class="form-control" required/>
-        </div>
-      </div>
-      <div class="mb-3 row">
-        <label for="inputPassword" class="col-sm-2 col-form-label"
-          >UC Supervisor Email</label
-        >
-        <div class="col-sm-10">
-          <input
-            type="email"
-            name="ucSupervisorEmail1"
-            id="ucSupervisorEmail"
-            class="form-control"
-            disabled
-          />
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="container border border-light-subtle rounded mb-3">
-    <h6 class="mt-3">Personal Data</h6>
-    <hr />
-    <div class="container">
-      <div class="mb-3 row">
-        <label for="staticEmail" class="col-sm-2 col-form-label"
-          >Full Name</label
-        >
-        <div class="col-sm-10">
-          <input
-            type="text"
-            name="studentFullName"
-            id=""
-            class="form-control"
-            placeholder="Name As in NRIC"
-            required
-          />
-        </div>
-      </div>
-      <div class="mb-3 row">
-        <label for="text" class="col-sm-2 col-form-label">NRIC</label>
-        <div class="col-sm-10">
-          <input
-            type="text"
-            name="studIC"
-            id=""
-            class="form-control"
-            placeholder="999999-99-9999"
-            required
-          />
-        </div>
-      </div>
-      <div class="mb-3 row">
-        <label for="inputPassword" class="col-sm-2 col-form-label"
-          >Gender</label
-        >
-        <div class="col-sm-10">
-          <select class="form-select" aria-label="Default select example" name="studGender" required>
-            <option selected>-- Select One --</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-          </select>
-        </div>
-      </div>
-      <div class="mb-3 row">
-        <label for="text" class="col-sm-2 col-form-label"
-          >Own Transport</label
-        >
-        <div class="col-sm-10">
-          <select class="form-select" aria-label="Default select example" name="studTransport" required>
-            <option selected>-- Select One --</option>
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-          </select>
-        </div>
-      </div>
-      <div class="mb-3 row">
-        <label for="text" class="col-sm-2 col-form-label"
-          >Health Remark</label
-        >
-        <div class="col-sm-10">
-          <textarea
-            class="form-control"
-            id="exampleFormControlTextarea1"
-            rows="3"
-            placeholder="Please state the details if you have any physical defects or is your health in any way impaired." name="studHealthRemark" required
-          ></textarea>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="container border border-light-subtle rounded mb-3">
-    <h6 class="mt-3">Contact Information</h6>
-    <hr />
-    <div class="container">
-      <div class="mb-3 row">
-        <label for="staticEmail" class="col-sm-2 col-form-label"
-          >Personal Email</label
-        >
-        <div class="col-sm-10">
-          <input
-            type="email"
-            name="studPersonalEmail"
-            id=""
-            class="form-control"
-            placeholder="Any active personal email"
-            required
-            />
-        </div>
-      </div>
-      <div class="mb-3 row">
-        <label for="inputPassword" class="col-sm-2 col-form-label"
-          >Term Address</label
-        >
-        <div class="col-sm-10">
-          <textarea
-            class="form-control"
-            id="exampleFormControlTextarea1"
-            rows="2"
-            placeholder="Current Term Address"
-            name="studTermAddress"
-            required
-          ></textarea>
-        </div>
-      </div>
-      <div class="mb-3 row">
-        <label for="inputPassword" class="col-sm-2 col-form-label"
-          >Permanent Address</label
-        >
-        <div class="col-sm-10">
-          <textarea
-            class="form-control"
-            id="exampleFormControlTextarea1"
-            rows="2"
-            placeholder="Hometown Address"
-            name="studPermanentAddress"
-            required
-          ></textarea>
-        </div>
-      </div>
-      <div class="mb-3 row">
-        <label for="inputPassword" class="col-sm-2 col-form-label"
-          >Mobile Number</label
-        >
-        <div class="col-sm-10">
-          <input
-            type="text"
-            id=""
-            class="form-control"
-            placeholder=" e.g: 012-3456789"
-            name="studMobileNumber"
-            required
-          />
-        </div>
+  <form action="{{url_for('signup')}}" method="post" class="needs-validation" novalidate>
+    <div class="container border border-light-subtle rounded mb-3">
+      <h6 class="mt-3">Academic Detail</h6>
+      <hr />
+      <div class="container">
+        <div class="mb-3 row">
+          <label for="level" class="col-sm-2 col-form-label">Level</label>
+          <div class="col-sm-10">
+            <select id="level" class="form-select" aria-label="Default select example" name="level" required>
+              <option value="" selected disabled hidden>-- Select One --</option>
+              <option value="Diploma">Diploma</option>
+              <option value="Bachelor">Bachelor</option>
+            </select>
+          </div>
         </div>
         <div class="mb-3 row">
-          <label for="inputPassword" class="col-sm-2 col-form-label"
-            >Fixed Number</label
-          >
+          <label for="cohort" class="col-sm-2 col-form-label">Cohort</label>
           <div class="col-sm-10">
-            <input
-              type="text"
-              id=""
-              class="form-control"
-              placeholder=" e.g: 03-123456789"
-              name="studFixedNumber"
-              required
-            />
+            <select class="form-select" aria-label="Default select example" name="cohort" required>
+              <option value="" selected disabled hidden>-- Select One --</option>
+              <option value="2020 May Intake">2020 May Intake</option>
+              <option value="2021 June Intake">2021 June Intake</option>
+              <option value="2022 June Intake">2022 June Intake</option>
+              <option value="2023 June Intake">2023 June Intake</option>
+            </select>
           </div>
         </div>
-    </div>  
-</div>
-      <div class="container border border-light-subtle rounded mb-3">
-        <h6 class="mt-3">Technical Knowledge</h6>
-        <hr />
-        <div class="container">
-          <div class="mb-3 row">
-            <label for="staticEmail" class="col-sm-2 col-form-label"
-              >Programming Knowledge</label
-            >
-            <div class="col-sm-10">
-                <textarea
-                class="form-control"
-                id="exampleFormControlTextarea1"
-                rows="2"
-                placeholder="Describe your programming skills"
-                name="studTechnicalSkills"
-                required
-              ></textarea>
+        <div class="mb-3 row">
+          <label for="programme" class="col-sm-2 col-form-label">Programme</label>
+          <div class="col-sm-10">
+            <select id="programme" class="form-select" aria-label="Default select example" name="programme" required
+              disabled>
+              <option value="" selected disabled hidden>-- Select One --</option>
+            </select>
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="tutorialGrp" class="col-sm-2 col-form-label">Tutorial Group</label>
+          <div class="col-sm-10" required>
+            <input type="number" name="tutorialGrp" id="tutorialGrp" class="form-control" placeholder=" e.g: 1 - 5"
+              required />
+            <div class="invalid-feedback">
+              Please provide a tutorial group.
             </div>
           </div>
-          <div class="mb-3 row">
-            <label for="inputPassword" class="col-sm-2 col-form-label"
-              >Database Knowledge</label
-            >
-            <div class="col-sm-10">
-              <textarea
-                class="form-control"
-                id="exampleFormControlTextarea1"
-                rows="2"
-                placeholder="Describe your database skills"
-                name="studDatabaseSkills"
-                required
-              ></textarea>
+        </div>
+        <div class="mb-3 row">
+          <label for="studentID" class="col-sm-2 col-form-label">Student ID</label>
+          <div class="col-sm-10">
+            <input type="text" id="studentID" name="studentID" class="form-control" placeholder="e.g: 99WMR9999"
+  pattern="^\d{2}[A-Z]{3}\d{5}$" required />
+            <div class="invalid-feedback">
+              Please provide your student ID in the format of e.g: ##WMR#####.
             </div>
           </div>
-          <div class="mb-3 row">
-            <label for="inputPassword" class="col-sm-2 col-form-label"
-              >Networking Knowledge</label
-            >
-            <div class="col-sm-10">
-              <textarea
-                class="form-control"
-                id="exampleFormControlTextarea1"
-                rows="2"
-                placeholder="Describe your networking skills"
-                name="studNetworkingSkills"
-                required
-              ></textarea>
+        </div>
+        <div class="mb-3 row">
+          <label for="studentEmail" class="col-sm-2 col-form-label">Student Email</label>
+          <div class="col-sm-10">
+            <input type="email" name="studentEmail" id="studentEmail" class="form-control"
+              placeholder="e.g: xxx-xx99@student.tarc.edu.my" required />
+              <div class="invalid-feedback">
+                Please provide your student email.
+              </div>
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="studCGPA" class="col-sm-2 col-form-label">CGPA</label>
+          <div class="col-sm-10">
+            <input type="text" name="studCGPA" id="studCGPA" class="form-control" placeholder=" e.g: 1.0 - 4.0"
+              required />
+              <div class="invalid-feedback">
+                Please provide your current CGPA.
+              </div>
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="ucSupervisorName" class="col-sm-2 col-form-label">UC Supervisor</label>
+          <div class="col-sm-10">
+            <input id="ucSupervisorName" type="text" name="ucSupervisor" class="form-control" required />
+            <div class="invalid-feedback">
+              Please provide your supervisor's name.
             </div>
           </div>
-        </div>  
+        </div>
+        <div class="mb-3 row">
+          <label for="ucSupervisorEmail" class="col-sm-2 col-form-label">UC Supervisor Email</label>
+          <div class="col-sm-10">
+            <input type="email" name="ucSupervisorEmail1" id="ucSupervisorEmail" class="form-control" disabled />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container border border-light-subtle rounded mb-3">
+      <h6 class="mt-3">Personal Data</h6>
+      <hr />
+      <div class="container">
+        <div class="mb-3 row">
+          <label for="studentFullName" class="col-sm-2 col-form-label">Full Name</label>
+          <div class="col-sm-10">
+            <input type="text" name="studentFullName" id="studentFullName" class="form-control"
+              placeholder="Name As in NRIC" required />
+              <div class="invalid-feedback">
+                Please provide your fullname.
+              </div>
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="studIC" class="col-sm-2 col-form-label">NRIC</label>
+          <div class="col-sm-10">
+            <input type="text" name="studIC" id="studIC" class="form-control" placeholder="e.g: ######-##-####"  pattern="^\d{6}-\d{2}-\d{4}$" required />
+            <div class="invalid-feedback">
+              Please provide your IC number in the format of e.g: ######-##-####.
+            </div>
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="studGender" class="col-sm-2 col-form-label">Gender</label>
+          <div class="col-sm-10">
+            <select class="form-select" aria-label="Default select example" id="studGender" name="studGender" required>
+              <option value="" selected disabled hidden>-- Select One --</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="studTransport" class="col-sm-2 col-form-label">Own Transport</label>
+          <div class="col-sm-10">
+            <select class="form-select" aria-label="Default select example" id="studTransport" name="studTransport"
+              required>
+              <option value="" selected disabled hidden>-- Select One --</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="studHealthRemark" class="col-sm-2 col-form-label">Health Remark</label>
+          <div class="col-sm-10">
+            <textarea class="form-control no-validate" id="studHealthRemark" rows="3"
+              placeholder="Please state the details if you have any physical defects or is your health in any way impaired."
+              name="studHealthRemark"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container border border-light-subtle rounded mb-3">
+      <h6 class="mt-3">Contact Information</h6>
+      <hr />
+      <div class="container">
+        <div class="mb-3 row">
+          <label for="studPersonalEmail" class="col-sm-2 col-form-label">Personal Email</label>
+          <div class="col-sm-10">
+            <input type="email" name="studPersonalEmail" id="studPersonalEmail" class="form-control"
+              placeholder="e.g: xxx-xx99@gmail.com" required />
+              <div class="invalid-feedback">
+                Please provide your personal email in the format of e.g: xxx-xx99@gmail.com.
+              </div>
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="studTermAddress" class="col-sm-2 col-form-label">Term Address</label>
+          <div class="col-sm-10">
+            <textarea class="form-control" id="studTermAddress" rows="2" placeholder="Current Term Address"
+              name="studTermAddress" required></textarea>
+              <div class="invalid-feedback">
+                Please provide your term address.
+              </div>
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="studPermanentAddress" class="col-sm-2 col-form-label">Permanent Address</label>
+          <div class="col-sm-10">
+            <textarea class="form-control" id="studPermanentAddress" rows="2" placeholder="Hometown Address"
+              name="studPermanentAddress" required></textarea>
+              <div class="invalid-feedback">
+                Please provide your permanent address.
+              </div>
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="studMobileNumber" class="col-sm-2 col-form-label">Mobile Number</label>
+          <div class="col-sm-10">
+            <input type="text" id="studMobileNumber" class="form-control" placeholder="e.g: 012-3456789"
+              name="studMobileNumber" pattern="^01\d-\d{7,8}$" required />
+              <div class="invalid-feedback">
+                Please provide your mobile number in the format of e.g: 012-3456789.
+              </div>
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="studFixedNumber" class="col-sm-2 col-form-label">House Number</label>
+          <div class="col-sm-10">
+            <input type="text" id="studFixedNumber" class="form-control no-validate" placeholder="e.g: 03-123456789"
+              name="studFixedNumber" pattern="^\d{2,3}-\d{7,8}$" />
+              <div class="invalid-feedback">
+                Please provide your house number in the format of e.g: 03-123456789.
+              </div>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="container border border-light-subtle rounded mb-3">
-        <h6 class="mt-3">Declarations</h6>
-        <hr />
-        <div class="container">
-            <p class="text-danger">I UNDERSTAND THAT I MUST COMPLETE THE FULL DURATION OF THE INDUSTRIAL TRAINING PROGRAMME PERIOD SATISFACTORILY IN ORDER TO PASS THE BAIT305C / AMIT3205 COURSE. I AGREE TO ABIDE BY THE RULES AND REGULATIONS OF THE COMPANY CONCERNED AND I WILL ALWAYS UPHOLD THE GOOD NAME OF THE UNIVERSITY COLLEGE AT ALL TIMES DURING THE WHOLE DURATION OF THE INDUSTRIAL TRAINING PROGRAMME.</p>
-            <div class="mb-3 row justify-content-center">
-                <div class="col-sm  text-end">
-                    <button type="submit" class="btn btn-success">I Accept</button>
-                </div>
-                <div class="col-sm">
-                    <button type="submit" class="btn btn-danger">I Decline</button>
-            </div>
-        </div>  
+      <h6 class="mt-3">Technical Knowledge</h6>
+      <hr />
+      <div class="container">
+        <div class="mb-3 row">
+          <label for="studTechnicalSkills" class="col-sm-2 col-form-label">Programming Knowledge</label>
+          <div class="col-sm-10">
+            <textarea class="form-control no-validate" id="studTechnicalSkills" rows="2"
+              placeholder="Describe your programming skills" name="studTechnicalSkills"></textarea>
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="studDatabaseSkills" class="col-sm-2 col-form-label">Database Knowledge</label>
+          <div class="col-sm-10">
+            <textarea class="form-control no-validate" id="studDatabaseSkills" rows="2" placeholder="Describe your database skills"
+              name="studDatabaseSkills"></textarea>
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="studNetworkingSkills" class="col-sm-2 col-form-label">Networking Knowledge</label>
+          <div class="col-sm-10">
+            <textarea class="form-control no-validate" id="studNetworkingSkills" rows="2"
+              placeholder="Describe your networking skills" name="studNetworkingSkills"></textarea>
+          </div>
+        </div>
+      </div>
     </div>
+    <div class="container border border-light-subtle rounded mb-3">
+      <h6 class="mt-3">Declarations</h6>
+      <hr />
+      <div class="container">
+        <p class="text-danger">I UNDERSTAND THAT I MUST COMPLETE THE FULL DURATION OF THE INDUSTRIAL TRAINING PROGRAMME
+          PERIOD SATISFACTORILY IN ORDER TO PASS THE BAIT305C / AMIT3205 COURSE. I AGREE TO ABIDE BY THE RULES AND
+          REGULATIONS OF THE COMPANY CONCERNED AND I WILL ALWAYS UPHOLD THE GOOD NAME OF THE UNIVERSITY COLLEGE AT ALL
+          TIMES DURING THE WHOLE DURATION OF THE INDUSTRIAL TRAINING PROGRAMME.</p>
+        <div class="mb-3 row justify-content-center">
+          <div class="col-sm  text-end">
+            <button id="acceptBtn" class="btn btn-success">I Accept</button>
+          </div>
+          <div class="col-sm">
+            <button id="declineBtn" class="btn btn-danger">I Decline</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <script>
+
+    $('#ucSupervisorName').change(function () {
+      $.ajax({
+        url: '',
+        type: 'get',
+        contentType: 'application/json',
+        data: {
+          ucSupervisorName: $(this).val()
+        },
+        success: function (response) {
+          $('#ucSupervisorEmail').val(response.ucSupervisorEmail);
+        }
+      })
+    })
+
+    $('#level').change(function () {
+      $.ajax({
+        url: "./process_level",
+        type: 'get',
+        contentType: 'application/json',
+        data: {
+          level: $(this).val()
+        },
+        success: function (response) {
+          $('#programme').empty()
+          $('#programme').prop('disabled', false)
+          $('#programme').append(`<option value="" selected disabled hidden>-- Select One --</option>`)
+          response.map((programme) => {
+            $('#programme').append(`<option value=${programme}>${programme}</option>`)
+          })
+          console.log(response)
+        }
+      })
+    });
+
+    (function () {
+      'use strict';
+
+      var acceptBtn = document.getElementById('acceptBtn');
+      var form = document.querySelector('.needs-validation');
+
+      if (acceptBtn && form) {
+        acceptBtn.addEventListener('click', function (event) {
+          if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+          } else {
+            console.log('enter');
+            form.submit();
+          }
+          form.classList.add('was-validated');
+        });
+      }
+
+    })();
+
+  </script>
+
+  {% endblock %}
 </div>
-</form>
-
-      <script>
-
-        $('#ucSupervisorName').change(function() {
-          $.ajax({
-            url: '',
-            type: 'get',
-            contentType: 'application/json',
-            data: {
-              ucSupervisorName: $(this).val()
-            },
-            success: function(response) {
-              $('#ucSupervisorEmail').val(response.ucSupervisorEmail);
-            }
-          })
-        })
-
-        $('#level').change(function() {
-          $.ajax({
-            url: "./process_level",
-            type: 'get',
-            contentType: 'application/json',
-            data: {
-              level: $(this).val()
-            },
-            success: function(response) {
-              $('#programme').empty()
-              $('#programme').append(`<option selected>-- Select One --</option>`)
-              response.map((programme) => {
-                $('#programme').append(`<option value=${programme}>${programme}</option>`)
-              })
-              console.log(response)
-            }
-          })
-        })
-      </script>
-
-      {% endblock %}
-    </div>
-  </div>
+</div>
 </div>

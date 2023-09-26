@@ -28,6 +28,14 @@
       a {
         color: white;
       }
+
+      #brand {
+        color: rgb(213, 213, 213);
+      }
+
+      #brand:hover {
+        color: white;
+      }
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
   </head>
@@ -50,7 +58,7 @@
             class="collapse navbar-collapse justify-content-between"
             id="navbarTogglerDemo01"
           >
-            <a class="navbar-brand fw-bold" href="{{url_for('index')}}"
+            <a id="brand" class="navbar-brand fw-bold" href="{{url_for('index')}}"
               >ITP ONLINE</a
             >
             <div class="container-fluid text-end text-decoration-none px-3">
