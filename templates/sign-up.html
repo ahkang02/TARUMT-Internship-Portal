@@ -93,10 +93,12 @@ block content %}
         <div class="mb-3 row">
           <label for="ucSupervisorName" class="col-sm-2 col-form-label">UC Supervisor</label>
           <div class="col-sm-10">
-            <input id="ucSupervisorName" type="text" oninput="capitalizeText(this)" name="ucSupervisor" class="form-control" required />
-            <div class="invalid-feedback">
-              Please provide your supervisor's name.
-            </div>
+            <select name="ucSupervisor" id="ucSupervisorName" class="form-select">
+              <option value="" selected>-- Select One --</option>
+              {% for ucSupervisor in sv_rows %}
+              <option value="{{ucSupervisor[1]}}">{{ucSupervisor[1]}}</option>
+              {% endfor %}
+            </select>
           </div>
         </div>
         <div class="mb-3 row">

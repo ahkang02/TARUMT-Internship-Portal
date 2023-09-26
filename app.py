@@ -66,6 +66,12 @@ def process_address():
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
 
+    cur = conn.cursor()
+    select_stmt = "SELECT * FROM Supervisor"
+    cur.execute(select_stmt)
+    sv_rows = cur.fetchall()
+    cur.close()
+
     if request.is_json:
         cur = conn.cursor()
         select_stmt = "SELECT * FROM Supervisor WHERE suvName = %s"
@@ -115,7 +121,7 @@ def signup():
 
         return redirect(url_for('login'))
 
-    return render_template('sign-up.html')
+    return render_template('sign-up.html', sv_rows = sv_rows)
 
 ### Login Starts Here ###
 @app.route('/login', methods=['GET', 'POST'])
