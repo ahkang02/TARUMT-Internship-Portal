@@ -29,6 +29,7 @@ cur = conn.cursor()
 def index():
     return render_template('index.html')
 
+### Processing Ajax Request ###
 @app.route('/process_level', methods=['GET'])
 def process_level():
     if request.is_json:
@@ -60,7 +61,8 @@ def process_address():
         rows = cur.fetchone()
         cur.close()
         return jsonify(rows)
-
+    
+### Sign Up Starts Here ###
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
 
@@ -119,6 +121,7 @@ def signup():
 
     return render_template('sign-up.html')
 
+### Login Starts Here ###
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 
@@ -144,12 +147,13 @@ def login():
     else:
         return render_template('login.html')
     
-
+### Logout Starts Here ###
 @app.route('/logout', methods=['GET', 'POST'])
 def logout():
     session.pop("username", None)
     return redirect(url_for('index'))
 
+### Submit Progress Report / Final Report Starts Here ###
 @app.route('/submitReport', methods=['GET', 'POST'])
 def submitReport():
 
@@ -210,6 +214,7 @@ def submitReport():
 
     return render_template('submitReport.html', rows = rows)
 
+### User Profile Starts Here ###
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
 
@@ -227,8 +232,6 @@ def profile():
     comp_rows = cur.fetchone()
     cur.close()
     
-
-
     if request.is_json:
         cur = conn.cursor()
         select_stmt = "SELECT * FROM Supervisor WHERE suvName = %s"
