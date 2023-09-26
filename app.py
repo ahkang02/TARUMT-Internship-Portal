@@ -258,7 +258,7 @@ def profile():
             ## Retrieve Info Then Update DB (Will Do Tomorrow)
         elif request.form['submit_button'] == "Submit" :
 
-            ### Storing Company Info of a Students
+            ### Storing Company Info of Students
             companyName = request.form['companyName']
             select_stmt = "SELECT compID FROM Company WHERE compName = %s"
             update_stmt = "UPDATE Student SET companyID = %s WHERE studEmail = %s"
@@ -281,6 +281,7 @@ def profile():
             conn.commit()
             cur.close()
 
+            ### Storing Forms Starts Here
             acceptanceForm = request.files['acceptForm']
             parentAckForm = request.files['parentAckForm']
             indemnityLetter = request.files['indemnityLetter']
