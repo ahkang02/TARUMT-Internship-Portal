@@ -42,15 +42,18 @@
         <nav aria-label="Page navigation example">
             <ul class="pagination">
                 <li class="page-item {% if page_num == 1 %} disabled {% endif %}">
-                    <a href="{{ url_for('studentsListing', page_num=page_num - 1, query=query) }}" class="page-link">Previous</a>
+                    <a href="{{ url_for('studentsListing', page_num=page_num - 1, query=query) }}"
+                        class="page-link">Previous</a>
                 </li>
                 {% for page in range(1, total_pages + 1) %}
                 <li class="page-item {% if page == page_num %} active {% endif %}">
-                    <a href="{{ url_for('studentsListing', page_num=page, query=query) }}" class="page-link">{{ page }}</a>
+                    <a href="{{ url_for('studentsListing', page_num=page, query=query) }}" class="page-link">{{ page
+                        }}</a>
                 </li>
                 {% endfor %}
                 <li class="page-item {% if page_num == total_pages %} disabled {% endif %}">
-                    <a href="{{ url_for('studentsListing', page_num=page_num + 1, query=query) }}" class="page-link">Next</a>
+                    <a href="{{ url_for('studentsListing', page_num=page_num + 1, query=query) }}"
+                        class="page-link">Next</a>
                 </li>
             </ul>
         </nav>
@@ -99,15 +102,15 @@
         var searchInput = document.getElementById('txtSearch');
 
         searchInput.addEventListener('keyup', function () {
-        if (event.key === 'Enter') {
-            var searchTerm = this.value.trim().toLowerCase();
+            if (event.key === 'Enter') {
+                var searchTerm = this.value.trim().toLowerCase();
 
-            var url = '/studentsListing/1?query=' + encodeURIComponent(searchTerm);
+                var url = '/studentsListing/1?query=' + encodeURIComponent(searchTerm);
 
-            window.location.href = url;
-        }
+                window.location.href = url;
+            }
 
-    });
+        });
 
         // Function to show all rows
         function showAllRows() {
@@ -127,15 +130,15 @@
         // Get the row containing the delete button
         var row = $(btn).closest('tr');
 
-        $.ajax({
-            url: "/deleteStud",
-            type: 'get',
-            contentType: 'application/json',
-            data: {
-                studID: $(btn).data('id') // Use data-id attribute from the button
-            },
-            success: function (response) {
-                if (confirm("Are you sure you want to remove this student?")) {
+        if (confirm("Are you sure you want to remove this student?")) {
+            $.ajax({
+                url: "/deleteStud",
+                type: 'get',
+                contentType: 'application/json',
+                data: {
+                    studID: $(btn).data('id') // Use data-id attribute from the button
+                },
+                success: function (response) {
                     // Remove the row from the table
                     row.remove();
                     console.log(response);
@@ -152,8 +155,8 @@
                         successNotification.style.display = 'none';
                     }, 1000);
                 }
-            }
-        });
+            });
+        }
     }
 
 </script>

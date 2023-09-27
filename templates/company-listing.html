@@ -20,7 +20,7 @@
                 <th scope="col">#</th>
                 <th scope="col">Company Name</th>
                 <th scope="col">Company Address</th>
-                <th scope="col">Action</th>
+                <th class="d-flex justify-content-center " scope="col">Action</th>
             </tr>
         </thead>
         <tbody id="studentTableBody">
@@ -29,7 +29,17 @@
                 <th scope="row"></th>
                 <td>{{ row[1] }}</td>
                 <td>{{ row[2] + ' ' + row[3] }}</td>
-                <td>Action</td>
+                <td class="d-flex justify-content-center">
+                    {% if row[4] == '1' %}
+                    <button class="btn btn-sm btn-primary mx-1 " style="width: 52px;" data-id="{{row[0]}}"
+                        onclick=unlist(this)>Unlist</button>
+                    {% else %}
+                    <button class="btn btn-sm btn-success  mx-1 " style="width: 52px;" data-id="{{row[0]}}"
+                        onclick=list(this)>List</button>
+                    {% endif %}
+                    <button class="btn btn-sm btn-danger mx-1 " data-id="{{row[0]}}"
+                        onclick=deleteComp(this)>Remove</button>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
@@ -39,20 +49,27 @@
         <nav aria-label="Page navigation example">
             <ul class="pagination">
                 <li class="page-item {% if page_num == 1 %} disabled {% endif %}">
-                    <a href="{{ url_for('companyListing', page_num=page_num - 1, query=query) }}" class="page-link">Previous</a>
+                    <a href="{{ url_for('companyListing', page_num=page_num - 1, query=query) }}"
+                        class="page-link">Previous</a>
                 </li>
                 {% for page in range(1, total_pages + 1) %}
                 <li class="page-item {% if page == page_num %} active {% endif %}">
-                    <a href="{{ url_for('companyListing', page_num=page, query=query) }}" class="page-link">{{ page }}</a>
+                    <a href="{{ url_for('companyListing', page_num=page, query=query) }}" class="page-link">{{ page
+                        }}</a>
                 </li>
                 {% endfor %}
                 <li class="page-item {% if page_num == total_pages %} disabled {% endif %}">
-                    <a href="{{ url_for('companyListing', page_num=page_num + 1, query=query) }}" class="page-link">Next</a>
+                    <a href="{{ url_for('companyListing', page_num=page_num + 1, query=query) }}"
+                        class="page-link">Next</a>
                 </li>
             </ul>
         </nav>
     </div>
 </div>
+
+
+<div id="successNotification" class="alert alert-success m-auto w-25 text-center"
+    style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 100;"></div>
 
 <script>
     document.getElementsByClassName('nav-link')[1].classList.add('active');
@@ -114,6 +131,96 @@
 
     // Initialize row numbers
     updateRowNumbers();
+
+
+    function unlist(btn){
+        $.ajax({
+                url: "/updateCompStatus",
+                type: 'get',
+                contentType: 'application/json',
+                data: {
+                    compID: $(btn).data('id'),
+                    status: 0
+                },
+                success: function (response) {
+                    console.log(response);
+
+                    btn.classList.toggle('btn-primary');
+                    btn.classList.toggle('btn-success');
+                    btn.textContent = 'List'
+
+                    // Show the success notification
+                    var successNotification = document.getElementById('successNotification');
+                    successNotification.style.display = 'block';
+                    successNotification.textContent = 'Company status updated successfully';
+
+                    // Automatically hide the notification after 3 seconds
+                    setTimeout(function () {
+                        successNotification.style.display = 'none';
+                    }, 1000);
+                }
+            });
+    }
+
+    function list(btn){
+        $.ajax({
+                url: "/updateCompStatus",
+                type: 'get',
+                contentType: 'application/json',
+                data: {
+                    compID: $(btn).data('id'),
+                    status: 1
+                },
+                success: function (response) {
+                    console.log(response);
+
+                    btn.classList.toggle('btn-primary');
+                    btn.classList.toggle('btn-success');
+                    btn.textContent = 'Unlist'
+
+                    // Show the success notification
+                    var successNotification = document.getElementById('successNotification');
+                    successNotification.style.display = 'block';
+                    successNotification.textContent = 'Company status updated successfully';
+
+                    // Automatically hide the notification after 3 seconds
+                    setTimeout(function () {
+                        successNotification.style.display = 'none';
+                    }, 1000);
+                }
+            });
+    }
+
+    function deleteComp(btn) {
+        // Get the row containing the delete button
+        var row = $(btn).closest('tr');
+
+        if (confirm("Are you sure you want to remove this company?")) {
+            $.ajax({
+                url: "/deleteComp",
+                type: 'get',
+                contentType: 'application/json',
+                data: {
+                    compID: $(btn).data('id') // Use data-id attribute from the button
+                },
+                success: function (response) {
+                    // Remove the row from the table
+                    row.remove();
+                    console.log(response);
+
+                    // Show the success notification
+                    var successNotification = document.getElementById('successNotification');
+                    successNotification.style.display = 'block';
+                    successNotification.textContent = 'Company removed successfully';
+
+                    // Automatically hide the notification after 3 seconds
+                    setTimeout(function () {
+                        successNotification.style.display = 'none';
+                    }, 1000);
+                }
+            });
+        }
+    }
 </script>
 
 

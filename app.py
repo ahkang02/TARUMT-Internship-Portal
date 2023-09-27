@@ -46,8 +46,8 @@ def process_level():
 def process_company():
     if request.is_json:
         cur = conn.cursor()
-        select_stmt = "SELECT compName, compAddress1, compAddress2 FROM Company"
-        cur.execute(select_stmt)
+        select_stmt = "SELECT compName, compAddress1, compAddress2 FROM Company WHERE status = %s"
+        cur.execute(select_stmt, (1,))
         rows = cur.fetchall()
         cur.close()
         return jsonify(rows)
@@ -128,10 +128,10 @@ def signup():
             companyName = request.form['companyName']
             companyAddress1 = request.form['companyAddress1']
             companyAddress2 = request.form['companyAddress2']
-            insert_stmt = "INSERT INTO Company VALUES (%s, %s, %s, %s)"
+            insert_stmt = "INSERT INTO Company VALUES (%s, %s, %s, %s, %s)"
             try:
                 cur = conn.cursor()
-                cur.execute(insert_stmt, (None, companyName, companyAddress1, companyAddress2))
+                cur.execute(insert_stmt, (None, companyName, companyAddress1, companyAddress2, 0))
                 conn.commit()
                 cur.close()
             
@@ -453,7 +453,7 @@ def companyListing(page_num):
     query = request.args.get('query') 
     if query:
         cur = conn.cursor()
-        comp = "SELECT * FROM Company  WHERE compName LIKE CONCAT('%', %s, '%') ORDER BY compName LIMIT %s OFFSET %s"
+        comp = "SELECT * FROM Company  WHERE compName LIKE CONCAT('%', %s, '%') ORDER BY status, compName LIMIT %s OFFSET %s"
         cur.execute(comp, (query ,per_page, offset))
         rows = cur.fetchall()
         cur.close()
@@ -465,7 +465,7 @@ def companyListing(page_num):
     else:
         query=""
         cur = conn.cursor()
-        comp = "SELECT * FROM Company ORDER BY compName  LIMIT %s OFFSET %s"
+        comp = "SELECT * FROM Company ORDER BY status, compName  LIMIT %s OFFSET %s"
         cur.execute(comp, (per_page, offset))
         rows = cur.fetchall()
         cur.close()
@@ -478,6 +478,27 @@ def companyListing(page_num):
     total_pages_company = (total_records_company + per_page - 1) // per_page
 
     return render_template('company-listing.html', rows=rows, page_num=page_num, total_pages=total_pages_company, query=query)
+
+@app.route('/deleteComp', methods=['GET'])
+def deleteComp():
+    compID = request.args.get('compID')
+    cur = conn.cursor()
+    delete_query = "DELETE FROM Company WHERE compID = %s"
+    cur.execute(delete_query, (compID,))
+    conn.commit()
+    cur.close()
+    return jsonify({'message': 'Company deleted successfully'})
+
+@app.route('/updateCompStatus', methods=['GET'])
+def updateCompStatus():
+    compID = request.args.get('compID')
+    status = request.args.get('status')
+    cur = conn.cursor()
+    delete_query = "UPDATE Company SET status = %s WHERE compID = %s"
+    cur.execute(delete_query, (status, compID,))
+    conn.commit()
+    cur.close()
+    return jsonify({'message': 'Company updated successfully'})
 
 if __name__ == "__main__":
     app.run(debug=True)
