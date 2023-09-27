@@ -383,24 +383,37 @@ def profile():
 
 @app.route('/studentsListing/<int:page_num>')
 def studentsListing(page_num):
-    per_page = 8 
+    per_page = 10
     offset = (page_num - 1) * per_page
     
-    cur = conn.cursor()
-    studs = "SELECT studIDCardNum, studName FROM Student ORDER BY studID, studName"
-    cur.execute(studs, (per_page, offset))
-    rows = cur.fetchall()
-    cur.close()
-
-    #get total number of records
-    cur = conn.cursor()
-    cur.execute("SELECT COUNT(*) FROM Student")
-    total_records = cur.fetchone()[0]
-    cur.close()
+    query = request.args.get('query') 
+    if query:
+        cur = conn.cursor()
+        studs = "SELECT studIDCardNum, studName FROM Student WHERE studName LIKE CONCAT('%' + %s + '%') ORDER BY studID, studName LIMIT %s OFFSET %s"
+        cur.execute(studs, (query, per_page, offset))
+        rows = cur.fetchall()
+        cur.close()
+        #get total number of records
+        cur = conn.cursor()
+        cur.execute("SELECT COUNT(*) FROM Student WHERE studName LIKE CONCAT('%' + %s + '%')", (query,))
+        total_records = cur.fetchone()[0]
+        cur.close()
+    else:
+        query=""
+        cur = conn.cursor()
+        studs = "SELECT studIDCardNum, studName FROM Student ORDER BY studID, studName LIMIT %s OFFSET %s"
+        cur.execute(studs, (per_page, offset))
+        rows = cur.fetchall()
+        cur.close()
+        #get total number of records
+        cur = conn.cursor()
+        cur.execute("SELECT COUNT(*) FROM Student")
+        total_records = cur.fetchone()[0]
+        cur.close()
 
     total_pages = (total_records + per_page - 1) // per_page
 
-    return render_template('students-listing.html', rows=rows, page_num=page_num, total_pages=total_pages)
+    return render_template('students-listing.html', rows=rows, page_num=page_num, total_pages=total_pages, query=query)
 
 @app.route('/studentDetails', methods=['GET'])
 def studentDetails():
@@ -434,24 +447,37 @@ def deleteStud():
 
 @app.route('/companyListing/<int:page_num>')
 def companyListing(page_num):
-    per_page = 20 
+    per_page = 10 
     offset = (page_num - 1) * per_page
 
-    cur = conn.cursor()
-    comp = "SELECT * FROM Company ORDER BY compName"
-    cur.execute(comp, (per_page, offset))
-    rows = cur.fetchall()
-    cur.close()
-
-    #get total number of records
-    cur = conn.cursor()
-    cur.execute("SELECT COUNT(*) FROM Company")
-    total_records_company = cur.fetchone()[0]
-    cur.close()
+    query = request.args.get('query') 
+    if query:
+        cur = conn.cursor()
+        comp = "SELECT * FROM Company  WHERE compName LIKE CONCAT('%', %s, '%') ORDER BY compName LIMIT %s OFFSET %s"
+        cur.execute(comp, (query ,per_page, offset))
+        rows = cur.fetchall()
+        cur.close()
+        #get total number of records
+        cur = conn.cursor()
+        cur.execute("SELECT COUNT(*) FROM Company WHERE compName LIKE CONCAT('%', %s, '%')", (query,))
+        total_records_company = cur.fetchone()[0]
+        cur.close()
+    else:
+        query=""
+        cur = conn.cursor()
+        comp = "SELECT * FROM Company ORDER BY compName  LIMIT %s OFFSET %s"
+        cur.execute(comp, (per_page, offset))
+        rows = cur.fetchall()
+        cur.close()
+        #get total number of records
+        cur = conn.cursor()
+        cur.execute("SELECT COUNT(*) FROM Company")
+        total_records_company = cur.fetchone()[0]
+        cur.close()
 
     total_pages_company = (total_records_company + per_page - 1) // per_page
 
-    return render_template('company-listing.html', rows=rows, page_num=page_num, total_pages=total_pages_company)
+    return render_template('company-listing.html', rows=rows, page_num=page_num, total_pages=total_pages_company, query=query)
 
 if __name__ == "__main__":
     app.run(debug=True)
