@@ -48,13 +48,13 @@
       <hr>
       <ul class="nav nav-pills flex-column mb-auto">
         <li class="nav-item">
-          <a href="{{ url_for('studentsListing') }}" class="nav-link text-white " aria-current="page">
+          <a href="{{ url_for('studentsListing', page_num = 1) }}" class="nav-link text-white " aria-current="page">
             <i class="bi bi-people-fill" width="16" height="16"></i>
             <span class="sidebar-hide"> Students Listing</span>
           </a>
         </li>
         <li>
-          <a href="{{ url_for('companyListing') }}" class="nav-link text-white">
+          <a href="{{ url_for('companyListing', page_num = 1) }}" class="nav-link text-white">
             <i class="bi bi-person-rolodex" width="16" height="16"></i>
             <span class="sidebar-hide">Company Listing</span>
           </a>

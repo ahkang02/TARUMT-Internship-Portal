@@ -381,15 +381,26 @@ def profile():
 
     return render_template('profile.html', rows = rows, sv_rows = sv_rows, comp_rows = comp_rows)
 
-@app.route('/studentsListing')
-def studentsListing():
+@app.route('/studentsListing/<int:page_num>')
+def studentsListing(page_num):
+    per_page = 8 
+    offset = (page_num - 1) * per_page
+    
     cur = conn.cursor()
     studs = "SELECT studIDCardNum, studName FROM Student ORDER BY studID, studName"
-    cur.execute(studs)
+    cur.execute(studs, (per_page, offset))
     rows = cur.fetchall()
     cur.close()
 
-    return render_template('students-listing.html', rows=rows)
+    #get total number of records
+    cur = conn.cursor()
+    cur.execute("SELECT COUNT(*) FROM Student")
+    total_records = cur.fetchone()[0]
+    cur.close()
+
+    total_pages = (total_records + per_page - 1) // per_page
+
+    return render_template('students-listing.html', rows=rows, page_num=page_num, total_pages=total_pages)
 
 @app.route('/studentDetails', methods=['GET'])
 def studentDetails():
@@ -421,14 +432,26 @@ def deleteStud():
     cur.close()
     return jsonify({'message': 'Student deleted successfully'})
 
-@app.route('/companyListing')
-def companyListing():
+@app.route('/companyListing/<int:page_num>')
+def companyListing(page_num):
+    per_page = 20 
+    offset = (page_num - 1) * per_page
+
     cur = conn.cursor()
     comp = "SELECT * FROM Company ORDER BY compName"
-    cur.execute(comp)
+    cur.execute(comp, (per_page, offset))
     rows = cur.fetchall()
     cur.close()
-    return render_template('company-listing.html', rows=rows)
+
+    #get total number of records
+    cur = conn.cursor()
+    cur.execute("SELECT COUNT(*) FROM Company")
+    total_records_company = cur.fetchone()[0]
+    cur.close()
+
+    total_pages_company = (total_records_company + per_page - 1) // per_page
+
+    return render_template('company-listing.html', rows=rows, page_num=page_num, total_pages=total_pages_company)
 
 if __name__ == "__main__":
     app.run(debug=True)
