@@ -91,7 +91,7 @@ def signup():
             studEmail = request.form["studentEmail"]
             studCGPA = request.form["studCGPA"]
             studentSupervisor = request.form["ucSupervisor"]
-            studFullName = request.form["studentFullName"]
+            studFullName = request.form["studentFullName"].title()
             studIC = request.form["studIC"]
             studGender = request.form["studGender"]
             studTransport = request.form["studTransport"]
@@ -387,7 +387,7 @@ def studentsListing():
     studs = "SELECT studIDCardNum, studName FROM Student ORDER BY studID, studName"
     cur.execute(studs)
     rows = cur.fetchall()
-    conn.close()
+    cur.close()
 
     return render_template('students-listing.html', rows=rows)
 
@@ -411,10 +411,24 @@ def studentDetails():
 
     return render_template('student-details.html', rows = rows, sv_rows = sv_rows, comp_rows = comp_rows)
 
+@app.route('/deleteStud', methods=['GET'])
+def deleteStud():
+    studID = request.args.get('studID')
+    cur = conn.cursor()
+    delete_query = "DELETE FROM Student WHERE studIDCardNum = %s"
+    cur.execute(delete_query, (studID,))
+    conn.commit()
+    cur.close()
+    return jsonify({'message': 'Student deleted successfully'})
 
 @app.route('/companyListing')
 def companyListing():
-    return render_template('company-listing.html')
+    cur = conn.cursor()
+    comp = "SELECT * FROM Company ORDER BY compName"
+    cur.execute(comp)
+    rows = cur.fetchall()
+    cur.close()
+    return render_template('company-listing.html', rows=rows)
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -75,7 +75,7 @@
             <label for="staticEmail" class="col-3 col-form-label">UC Supervisor Name</label>
             <div class="col">
               <input type="text" class="col-9 form-control" id="ucSupervisorName" value="{{sv_rows[1]}}"
-                name="ucSupervisorName1" />
+                name="ucSupervisorName1" disabled/>
             </div>
           </div>
           <div class="mb-3 row">
@@ -95,7 +95,7 @@
           <div class="mb-3 row">
             <label for="staticEmail" class="col-3 col-form-label">Company Name</label>
             <div class="col">
-              <select name="companyName" id="compName" class="col-9 form-select" required>
+              <select name="companyName" id="compName" class="col-9 form-select" disabled required>
                 {% if comp_rows[0] %}
                 <option selected> {{ comp_rows[1] }} </option>
                 {% else %}
@@ -108,53 +108,52 @@
             <label for="inputPassword" class="col-3 col-form-label">Address 1</label>
             <div class="col">
               <textarea id="address1" class="col-9 form-control" rows="2" disabled
-                name="address-1">{{ comp_rows[2] }}</textarea>
+                name="address-1" disabled>{{ comp_rows[2] }}</textarea>
             </div>
           </div>
           <div class="mb-3 row">
             <label for="staticEmail" class="col-3 col-form-label">Address 2</label>
             <div class="col">
               <textarea id="address2" class="col-9 form-control" rows="2" disabled
-                name="address-2">{{ comp_rows[3] }}</textarea>
+                name="address-2" disabled>{{ comp_rows[3] }}</textarea>
             </div>
           </div>
           <div class="mb-3 row">
             <label for="inputPassword" class="col-3 col-form-label">Monthly Allowance</label>
             <div class="col">
               <input type="text" class="col-9 form-control" id="staticEmail" name="monthlyAllowance" required
-                value="{{rows[24]}}" />
+                value="{{rows[24]}}" disabled/>
             </div>
           </div>
           <div class="mb-3 row">
             <label for="inputPassword" class="col-3 col-form-label">Com. Supervisor Name</label>
             <div class="col">
-              <input type="text" class="col-9 form-control" id="staticEmail" name="comSvName" required value="{{rows[25]}}" />
+              <input type="text" class="col-9 form-control" id="staticEmail" name="comSvName" required value="{{rows[25]}}" disabled/>
             </div>
           </div>
           <div class="mb-3 row">
             <label for="inputPassword" class="col-3 col-form-label">Com. Supervisor Email</label>
             <div class="col">
               <input type="text" class="col-9 form-control" id="staticEmail" name="comSvEmail" required
-                value="{{rows[26]}}" />
+                value="{{rows[26]}}" disabled/>
             </div>
           </div>
           <div class="mb-3 row">
             <label for="inputPassword" class="col-3 col-form-label">Com. Acceptance Form</label>
             <div class="col">
-                <a href="https://tarumt-intern-s3.s3.amazonaws.com/acceptanceForm6a985c9b-cb08-451f-b2c9-b0eaa210a569-form_files">Download</a>
-              <!--input class="col-9 form-control" type="file" id="acceptForm" name="acceptForm" required-->
+              <!--input class="col-9 form-control" type="file" id="acceptForm" name="acceptForm" required disabled-->
             </div>
           </div>
           <div class="mb-3 row">
             <label for="inputPassword" class="col-3 col-form-label">Parent Ack. Form</label>
             <div class="col">
-              <input class="col-9 form-control" type="file" id="formFile" name="parentAckForm" required />
+              <input class="col-9 form-control" type="file" id="formFile" name="parentAckForm" required disabled/>
             </div>
           </div>
           <div class="mb-3 row">
             <label for="inputPassword" class="col-3 col-form-label">Letter of Indemnity</label>
             <div class="col">
-              <input class="col-9 form-control" type="file" id="formFile" name="indemnityLetter" required />
+              <input class="col-9 form-control" type="file" id="formFile" name="indemnityLetter" required disabled/>
             </div>
           </div>
         </div>
@@ -162,4 +161,8 @@
     </div>
   </form>
 </div>
+
+<script>
+        document.getElementsByClassName('nav-link')[0].classList.add('active');
+</script>
 {% endblock %}
