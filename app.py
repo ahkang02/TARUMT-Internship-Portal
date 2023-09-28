@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
-from functools import wraps
 import sys
 import pymysql
 from pymysql import connections
@@ -28,14 +27,6 @@ except pymysql.Error as e:
     
 # Get Cursor
 cur = conn.cursor()
-
-def requireLogin(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if not session.get('logged_in'):
-            return redirect(url_for('login'))
-        return f(*args, **kwargs)
-    return decorated_function
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -190,7 +181,6 @@ def login():
             if rows is not None and password == rows[3]:
                 session["username"] = username
                 session['admin'] = False
-                session['logged_in'] = True
                 return redirect(url_for('profile'))
             else:
                 print('enter invalid')
@@ -206,12 +196,10 @@ def login():
 def logout():
     session.pop("username", None)
     session.pop("admin", None)
-    session.pop('logged_in', None)
     return redirect(url_for('index'))
 
 ### Submit Progress Report / Final Report Starts Here ###
 @app.route('/submitReport', methods=['GET', 'POST'])
-@requireLogin
 def submitReport():
 
     if 'username' in session and 'admin' in session and session['username'] == app.config['ADMIN_CREDENTIALS'] and session['admin'] == True:
@@ -279,7 +267,6 @@ def submitReport():
 
 ### User Profile Starts Here ###
 @app.route('/profile', methods=['GET', 'POST'])
-@requireLogin
 def profile():
 
     if 'username' in session and 'admin' in session and session['username'] == app.config['ADMIN_CREDENTIALS'] and session['admin'] == True:
@@ -423,7 +410,6 @@ def profile():
     return render_template('profile.html', rows = rows, sv_rows = sv_rows, comp_rows = comp_rows)
 
 @app.route('/studentsListing/<int:page_num>')
-@requireLogin
 def studentsListing(page_num):
     if 'username' not in session or 'admin' not in session or session['username'] != app.config['ADMIN_CREDENTIALS'] or session['admin'] == False:
         return redirect(url_for('index'))
@@ -461,7 +447,6 @@ def studentsListing(page_num):
     return render_template('students-listing.html', rows=rows, page_num=page_num, total_pages=total_pages, query=query)
 
 @app.route('/studentDetails', methods=['GET'])
-@requireLogin
 def studentDetails():
     if 'username' not in session or 'admin' not in session or session['username'] != app.config['ADMIN_CREDENTIALS'] or session['admin'] == False:
         return redirect(url_for('index'))       
@@ -504,7 +489,6 @@ def deleteStud():
     return jsonify({'message': 'Student deleted successfully'})
 
 @app.route('/companyListing/<int:page_num>')
-@requireLogin
 def companyListing(page_num):
     if 'username' not in session or 'admin' not in session or session['username'] != app.config['ADMIN_CREDENTIALS'] or session['admin'] == False:
         return redirect(url_for('index'))
