@@ -88,7 +88,7 @@
         function filterRows(searchTerm) {
             for (var i = 0; i < rows.length; i++) {
                 var row = rows[i];
-                var studentName = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
+                var studentName = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
                 if (studentName.includes(searchTerm.toLowerCase())) {
                     row.style.display = '';
                 } else {

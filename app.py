@@ -418,7 +418,7 @@ def studentsListing(page_num):
     query = request.args.get('query') 
     if query:
         cur = conn.cursor()
-        studs = "SELECT studIDCardNum, studName FROM Student WHERE studName LIKE CONCAT('%' + %s + '%') ORDER BY studID, studName LIMIT %s OFFSET %s"
+        studs = "SELECT studIDCardNum, studName FROM Student WHERE studName LIKE CONCAT('%', %s, '%') ORDER BY studID, studName LIMIT %s OFFSET %s"
         cur.execute(studs, (query, per_page, offset))
         rows = cur.fetchall()
         cur.close()
