@@ -467,10 +467,16 @@ def studentDetails():
         cur.execute(select_stmt_comp, (rows[22],))
         comp_rows = cur.fetchone()
         cur.close()
+
+        select_stmt_form = "SELECT * FROM Form WHERE formID = %s"
+        cur.execute(select_stmt_form, (rows[21],))
+        form_rows = cur.fetchone()
+        cur.close()
+
     else:
         return redirect(url_for('studentsListing', page_num=1))
 
-    return render_template('student-details.html', rows = rows, sv_rows = sv_rows, comp_rows = comp_rows)
+    return render_template('student-details.html', rows = rows, sv_rows = sv_rows, comp_rows = comp_rows, form_rows = form_rows)
 
 @app.route('/deleteStud', methods=['GET'])
 def deleteStud():
