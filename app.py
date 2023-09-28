@@ -10,7 +10,6 @@ import boto3
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = SECRET_KEY
-app.config['ADMIN_CREDENTIALS'] = 'admin'
 
 # Connect to MariaDB Platform
 try:
@@ -30,9 +29,11 @@ cur = conn.cursor()
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    if 'username' in session and 'admin' in session and session['username'] == app.config['ADMIN_CREDENTIALS'] and session['admin'] == True:
+    if 'username' in session and 'admin' in session and session.get('username') == 'admin' and session.get('admin') == True:
         return redirect(url_for('studentsListing', page_num=1))
 
+    print(session.get('username'))
+    print(session.get('admin'))
     return render_template('index.html')
 
 ### Processing AJAX Request ###
@@ -202,7 +203,7 @@ def logout():
 @app.route('/submitReport', methods=['GET', 'POST'])
 def submitReport():
 
-    if 'username' in session and 'admin' in session and session['username'] == app.config['ADMIN_CREDENTIALS'] and session['admin'] == True:
+    if 'username' in session and 'admin' in session and session.get('username') == 'admin' and session.get('admin') == True:
         return redirect(url_for('studentsListing', page_num=1))
     elif 'username' not in session and 'admin' not in session:
         return redirect(url_for('index'))
@@ -269,7 +270,7 @@ def submitReport():
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
 
-    if 'username' in session and 'admin' in session and session['username'] == app.config['ADMIN_CREDENTIALS'] and session['admin'] == True:
+    if 'username' in session and 'admin' in session and session.get('username') == 'admin' and session.get('admin') == True:
         return redirect(url_for('studentsListing', page_num=1))
     elif 'username' not in session and 'admin' not in session:
         return redirect(url_for('index'))
@@ -411,7 +412,7 @@ def profile():
 
 @app.route('/studentsListing/<int:page_num>')
 def studentsListing(page_num):
-    if 'username' not in session or 'admin' not in session or session['username'] != app.config['ADMIN_CREDENTIALS'] or session['admin'] == False:
+    if 'username' not in session or 'admin' not in session or session.get('username') != 'admin' or session.get('admin') == False:
         return redirect(url_for('index'))
      
     per_page = 10
@@ -448,7 +449,7 @@ def studentsListing(page_num):
 
 @app.route('/studentDetails', methods=['GET'])
 def studentDetails():
-    if 'username' not in session or 'admin' not in session or session['username'] != app.config['ADMIN_CREDENTIALS'] or session['admin'] == False:
+    if 'username' not in session or 'admin' not in session or session.get('username') != 'admin' or session.get('admin') == False:
         return redirect(url_for('index'))       
 
     studID = request.args.get('studID')
@@ -490,7 +491,7 @@ def deleteStud():
 
 @app.route('/companyListing/<int:page_num>')
 def companyListing(page_num):
-    if 'username' not in session or 'admin' not in session or session['username'] != app.config['ADMIN_CREDENTIALS'] or session['admin'] == False:
+    if 'username' not in session or 'admin' not in session or session.get('username') != 'admin' or session.get('admin') == False:
         return redirect(url_for('index'))
     
     per_page = 10 
