@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
-import mariadb, sys
+import sys
+import pymysql
+from pymysql import connections
 from config import *
 import uuid
 import json
@@ -12,14 +14,14 @@ app.config['ADMIN_CREDENTIALS'] = 'admin'
 
 # Connect to MariaDB Platform
 try:
-    conn = mariadb.connect(
-        user = RDS_LOGIN,
-        password = RDS_PASS,
+    conn = connections.Connection(
         host = RDS_HOST_ENDPOINT,
         port = DB_PORT,
-        database = DB_INSTANCE_NAME
+        user = RDS_LOGIN,
+        password = RDS_PASS,
+        db = DB_INSTANCE_NAME
     )
-except mariadb.Error as e:
+except pymysql.Error as e:
     print(f"Error connecting to MariaDB Platform: {e}")
     sys.exit(1)
     
@@ -123,7 +125,7 @@ def signup():
                 conn.commit()
                 cur.close()
             
-            except mariadb.Error as e:
+            except pymysql.Error as e:
                 print(f"Error: {e}")
                 sys.exit(1)
 
@@ -142,7 +144,7 @@ def signup():
                 conn.commit()
                 cur.close()
             
-            except mariadb.Error as e:
+            except pymysql.Error as e:
                 print(f"Error: {e}")
                 sys.exit(1)
             
@@ -173,7 +175,7 @@ def login():
                 cur.execute(select_stmt, (username,))
                 rows = cur.fetchone()
                 cur.close()
-            except mariadb.Error as e:
+            except pymysql.Error as e:
                 print(f"Error: {e}")
 
             if rows is not None and password == rows[3]:
