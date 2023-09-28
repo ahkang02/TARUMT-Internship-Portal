@@ -8,6 +8,7 @@ import boto3
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = SECRET_KEY
+app.config['ADMIN_CREDENTIALS'] = 'admin'
 
 # Connect to MariaDB Platform
 try:
@@ -27,6 +28,9 @@ cur = conn.cursor()
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    if 'username' in session and 'admin' in session and session['username'] == app.config['ADMIN_CREDENTIALS'] and session['admin'] == True:
+        return redirect(url_for('studentsListing', page_num=1))
+
     return render_template('index.html')
 
 ### Processing AJAX Request ###
@@ -66,6 +70,9 @@ def process_address():
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
 
+    if 'username' in session and 'admin' in session:
+        return redirect(url_for('index'))
+    
     cur = conn.cursor()
     select_stmt = "SELECT * FROM Supervisor"
     cur.execute(select_stmt)
@@ -147,29 +154,36 @@ def signup():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 
+    if 'username' in session and 'admin' in session:
+        return redirect(url_for('index'))
+    
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
         rows = None 
         cur = conn.cursor()
 
-        try:
-            select_stmt = "SELECT * FROM Student WHERE studEmail = %s"
-            cur.execute(select_stmt, (username,))
-            rows = cur.fetchone()
-            cur.close()
-        except mariadb.Error as e:
-            print(f"Error: {e}")
-
-        if rows is not None and password == rows[3]:
-            session["username"] = username
-            return redirect(url_for('profile'))
+        if username == app.config['ADMIN_CREDENTIALS'] and password == app.config['ADMIN_CREDENTIALS']:
+            session['username'] = username
+            session['admin'] = True
+            return redirect(url_for('studentsListing', page_num = 1))
         else:
-            print('enter invalid')
-            error_msg = "Invalid Username or Password"
-            return render_template('login.html', error_msg = error_msg)
-    
-    
+            try:
+                select_stmt = "SELECT * FROM Student WHERE studEmail = %s"
+                cur.execute(select_stmt, (username,))
+                rows = cur.fetchone()
+                cur.close()
+            except mariadb.Error as e:
+                print(f"Error: {e}")
+
+            if rows is not None and password == rows[3]:
+                session["username"] = username
+                session['admin'] = False
+                return redirect(url_for('profile'))
+            else:
+                print('enter invalid')
+                error_msg = "Invalid Username or Password"
+                return render_template('login.html', error_msg = error_msg)
     else:
         if "username" in session:
             return redirect(url_for('profile'))
@@ -179,12 +193,19 @@ def login():
 @app.route('/logout', methods=['GET', 'POST'])
 def logout():
     session.pop("username", None)
+    session.pop("admin", None)
     return redirect(url_for('index'))
 
 ### Submit Progress Report / Final Report Starts Here ###
 @app.route('/submitReport', methods=['GET', 'POST'])
 def submitReport():
 
+    if 'username' in session and 'admin' in session and session['username'] == app.config['ADMIN_CREDENTIALS'] and session['admin'] == True:
+        return redirect(url_for('studentsListing', page_num=1))
+    elif 'username' not in session and 'admin' not in session:
+        return redirect(url_for('index'))
+
+     
     cur = conn.cursor()
     select_stmt = "SELECT * FROM Student WHERE studEmail = %s"
     cur.execute(select_stmt, (session["username"],))
@@ -246,6 +267,11 @@ def submitReport():
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
 
+    if 'username' in session and 'admin' in session and session['username'] == app.config['ADMIN_CREDENTIALS'] and session['admin'] == True:
+        return redirect(url_for('studentsListing', page_num=1))
+    elif 'username' not in session and 'admin' not in session:
+        return redirect(url_for('index'))
+    
     cur = conn.cursor()
     select_stmt = "SELECT * FROM Student WHERE studEmail = %s"
     cur.execute(select_stmt, (session["username"],))
@@ -383,6 +409,9 @@ def profile():
 
 @app.route('/studentsListing/<int:page_num>')
 def studentsListing(page_num):
+    if 'username' not in session or 'admin' not in session or session['username'] != app.config['ADMIN_CREDENTIALS'] or session['admin'] == False:
+        return redirect(url_for('index'))
+     
     per_page = 10
     offset = (page_num - 1) * per_page
     
@@ -417,21 +446,27 @@ def studentsListing(page_num):
 
 @app.route('/studentDetails', methods=['GET'])
 def studentDetails():
+    if 'username' not in session or 'admin' not in session or session['username'] != app.config['ADMIN_CREDENTIALS'] or session['admin'] == False:
+        return redirect(url_for('index'))       
+
     studID = request.args.get('studID')
-    
-    cur = conn.cursor()
-    select_stmt = "SELECT * FROM Student WHERE studIDCardNum = %s"
-    cur.execute(select_stmt, (studID,))
-    rows = cur.fetchone()
 
-    select_stmt_sv = "SELECT * FROM Supervisor WHERE suvID = %s"
-    cur.execute(select_stmt_sv, (rows[10],))
-    sv_rows = cur.fetchone() 
+    if studID:
+        cur = conn.cursor()
+        select_stmt = "SELECT * FROM Student WHERE studIDCardNum = %s"
+        cur.execute(select_stmt, (studID,))
+        rows = cur.fetchone()
 
-    select_stmt_comp = "SELECT * FROM Company WHERE compID = %s"
-    cur.execute(select_stmt_comp, (rows[22],))
-    comp_rows = cur.fetchone()
-    cur.close()
+        select_stmt_sv = "SELECT * FROM Supervisor WHERE suvID = %s"
+        cur.execute(select_stmt_sv, (rows[10],))
+        sv_rows = cur.fetchone() 
+
+        select_stmt_comp = "SELECT * FROM Company WHERE compID = %s"
+        cur.execute(select_stmt_comp, (rows[22],))
+        comp_rows = cur.fetchone()
+        cur.close()
+    else:
+        return redirect(url_for('studentsListing', page_num=1))
 
     return render_template('student-details.html', rows = rows, sv_rows = sv_rows, comp_rows = comp_rows)
 
@@ -447,6 +482,9 @@ def deleteStud():
 
 @app.route('/companyListing/<int:page_num>')
 def companyListing(page_num):
+    if 'username' not in session or 'admin' not in session or session['username'] != app.config['ADMIN_CREDENTIALS'] or session['admin'] == False:
+        return redirect(url_for('index'))
+    
     per_page = 10 
     offset = (page_num - 1) * per_page
 

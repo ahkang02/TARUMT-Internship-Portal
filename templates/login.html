@@ -16,10 +16,10 @@ block content %}
   }
 
   @media (max-width: 991px) {
-      #login-container{
-        width: 90% !important;
-      }
+    #login-container {
+      width: 90% !important;
     }
+  }
 </style>
 
 <div class="container-fluid mt-5">
@@ -51,7 +51,7 @@ block content %}
                 </div>
               </div>
             </div>
-            <br/>
+            <br />
             <div class="text-center">
               <button id="loginBtn" class="btn btn-success">Login</button>
             </div>
@@ -74,8 +74,15 @@ block content %}
     }
   }
 
-  // Example starter JavaScript for disabling form submissions if there are invalid fields
-  (function () {
+  document.getElementById('emailInput').addEventListener('input', function() {
+    if (this.value === 'admin') {
+        this.type = 'text';
+    } else {
+        this.type = 'email';
+    }
+});
+
+(function () {
     'use strict';
 
     // Fetch all the forms we want to apply custom Bootstrap validation styles to
