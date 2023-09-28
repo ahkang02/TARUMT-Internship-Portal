@@ -42,7 +42,7 @@
 <body class="vh-100 overflow-hidden">
   <div class="d-flex flex-row vh-100">
     <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark sidebar" style="width: 280px; height: 100%;">
-      <a href="/" class="d-flex align-items-center justify-content-center text-white text-decoration-none text-center ">
+      <a href="{{ url_for('studentsListing', page_num = 1) }}" class="d-flex align-items-center justify-content-center text-white text-decoration-none text-center ">
         <span id="brand" class="fs-3 fw-bold sidebar-title">TARUMT ITP</span>
       </a>
       <hr>
