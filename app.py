@@ -221,9 +221,11 @@ def submitReport():
 
         progressReport = request.files['progressReport']
         finalReport = request.files['finalReport']
+        progressExtension = progressReport.filename.split(".")[1]
+        finalExtension = finalReport.filename.split(".")[1]
         id = uuid.uuid4()
-        progressReport_file_name_in_s3 = 'progressReport' + str(id) + "-form_files"
-        finalReport_file_name_in_s3 = 'finalReport' + str(id) + "-form_files"
+        progressReport_file_name_in_s3 = 'progressReport' + str(id) + "." + progressExtension
+        finalReport_file_name_in_s3 = 'finalReport' + str(id) + "." + finalExtension
 
         s3 = boto3.resource('s3')
         try:
@@ -348,9 +350,13 @@ def profile():
 
             ### Setting Random IDs to the Files
             id = uuid.uuid4()
-            acceptForm_file_name_in_s3 = 'acceptanceForm' + str(id) + "-form_files"
-            parentAckForm_file_name_in_s3 = 'parentAckForm' + str(id) + "-form_files"
-            indemnityLetter_file_name_in_s3 = 'indemnityLetter' + str(id) + "-form_files"
+            acceptanecFormExtension = acceptanceForm.filename.split(".")[1]
+            parentAckFormExtension = parentAckForm.filename.split(".")[1]
+            indemnityLetterExtension = indemnityLetter.filename.split(".")[1]
+
+            acceptForm_file_name_in_s3 = 'acceptanceForm' + str(id) + "." + acceptanecFormExtension
+            parentAckForm_file_name_in_s3 = 'parentAckForm' + str(id) + "." + parentAckFormExtension
+            indemnityLetter_file_name_in_s3 = 'indemnityLetter' + str(id) + "." + indemnityLetterExtension
 
             ### Calling S3 Bucket API
             s3 = boto3.resource('s3') 
