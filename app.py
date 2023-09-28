@@ -10,6 +10,7 @@ import boto3
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = SECRET_KEY
+app.config['ADMIN_CREDENTIAL'] = 'admin'
 
 # Connect to MariaDB Platform
 try:
@@ -29,7 +30,7 @@ cur = conn.cursor()
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    if 'username' in session and 'admin' in session and session.get('username') == 'admin' and session.get('admin') == True:
+    if 'username' in session and 'admin' in session and session.get('username') == app.config['ADMIN_CREDENTIAL'] and session.get('admin') == True:
         return redirect(url_for('studentsListing', page_num=1))
 
     print(session.get('username'))
@@ -166,7 +167,7 @@ def login():
         rows = None 
         cur = conn.cursor()
 
-        if username == 'admin' and password == 'admin':
+        if username == app.config['ADMIN_CREDENTIAL'] and password == app.config['ADMIN_CREDENTIAL']:
             session['username'] = username
             session['admin'] = True
             return redirect(url_for('studentsListing', page_num = 1))
@@ -203,7 +204,7 @@ def logout():
 @app.route('/submitReport', methods=['GET', 'POST'])
 def submitReport():
 
-    if 'username' in session and 'admin' in session and session.get('username') == 'admin' and session.get('admin') == True:
+    if 'username' in session and 'admin' in session and session.get('username') == app.config['ADMIN_CREDENTIAL'] and session.get('admin') == True:
         return redirect(url_for('studentsListing', page_num=1))
     elif 'username' not in session and 'admin' not in session:
         return redirect(url_for('index'))
@@ -271,7 +272,7 @@ def submitReport():
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
 
-    if 'username' in session and 'admin' in session and session.get('username') == 'admin' and session.get('admin') == True:
+    if 'username' in session and 'admin' in session and session.get('username') == app.config['ADMIN_CREDENTIAL'] and session.get('admin') == True:
         return redirect(url_for('studentsListing', page_num=1))
     elif 'username' not in session and 'admin' not in session:
         return redirect(url_for('index'))
@@ -413,7 +414,7 @@ def profile():
 
 @app.route('/studentsListing/<int:page_num>')
 def studentsListing(page_num):
-    if 'username' not in session or 'admin' not in session or session.get('username') != 'admin' or session.get('admin') == False:
+    if 'username' not in session or 'admin' not in session or session.get('username') != app.config['ADMIN_CREDENTIAL'] or session.get('admin') == False:
         return redirect(url_for('index'))
      
     per_page = 10
@@ -422,13 +423,13 @@ def studentsListing(page_num):
     query = request.args.get('query') 
     if query:
         cur = conn.cursor()
-        studs = "SELECT studIDCardNum, studName FROM Student WHERE studName LIKE CONCAT('%', %s, '%') ORDER BY studID, studName LIMIT %s OFFSET %s"
-        cur.execute(studs, (query, per_page, offset))
+        studs = "SELECT studIDCardNum, studName FROM Student WHERE studName LIKE %s ORDER BY studID, studName LIMIT %s OFFSET %s"
+        cur.execute(studs, ('%' + query + '%', per_page, offset))
         rows = cur.fetchall()
         cur.close()
         #get total number of records
         cur = conn.cursor()
-        cur.execute("SELECT COUNT(*) FROM Student WHERE studName LIKE CONCAT('%', %s, '%')", (query,))
+        cur.execute("SELECT COUNT(*) FROM Student WHERE studName LIKE %s", ('%' + query + '%',))
         total_records = cur.fetchone()[0]
         cur.close()
     else:
@@ -450,7 +451,7 @@ def studentsListing(page_num):
 
 @app.route('/studentDetails', methods=['GET'])
 def studentDetails():
-    if 'username' not in session or 'admin' not in session or session.get('username') != 'admin' or session.get('admin') == False:
+    if 'username' not in session or 'admin' not in session or session.get('username') != app.config['ADMIN_CREDENTIAL'] or session.get('admin') == False:
         return redirect(url_for('index'))       
 
     studID = request.args.get('studID')
@@ -491,7 +492,7 @@ def deleteStud():
 
 @app.route('/companyListing/<int:page_num>')
 def companyListing(page_num):
-    if 'username' not in session or 'admin' not in session or session.get('username') != 'admin' or session.get('admin') == False:
+    if 'username' not in session or 'admin' not in session or session.get('username') != app.config['ADMIN_CREDENTIAL'] or session.get('admin') == False:
         return redirect(url_for('index'))
     
     per_page = 10 
@@ -500,13 +501,13 @@ def companyListing(page_num):
     query = request.args.get('query') 
     if query:
         cur = conn.cursor()
-        comp = "SELECT * FROM Company  WHERE compName LIKE CONCAT('%', %s, '%') ORDER BY status, compName LIMIT %s OFFSET %s"
-        cur.execute(comp, (query ,per_page, offset))
+        comp = "SELECT * FROM Company  WHERE compName LIKE %s ORDER BY status, compName LIMIT %s OFFSET %s"
+        cur.execute(comp, ('%' + query + '%',per_page, offset))
         rows = cur.fetchall()
         cur.close()
         #get total number of records
         cur = conn.cursor()
-        cur.execute("SELECT COUNT(*) FROM Company WHERE compName LIKE CONCAT('%', %s, '%')", (query,))
+        cur.execute("SELECT COUNT(*) FROM Company WHERE compName LIKE %s", ('%' + query + '%',))
         total_records_company = cur.fetchone()[0]
         cur.close()
     else:
