@@ -428,7 +428,7 @@ def studentsListing(page_num):
         cur.close()
         #get total number of records
         cur = conn.cursor()
-        cur.execute("SELECT COUNT(*) FROM Student WHERE studName LIKE CONCAT('%' + %s + '%')", (query,))
+        cur.execute("SELECT COUNT(*) FROM Student WHERE studName LIKE CONCAT('%', %s, '%')", (query,))
         total_records = cur.fetchone()[0]
         cur.close()
     else:
