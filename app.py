@@ -213,6 +213,7 @@ def submitReport():
     select_stmt = "SELECT * FROM Student WHERE studEmail = %s"
     cur.execute(select_stmt, (session["username"],))
     rows = cur.fetchone()
+    cur.close()
 
 
     if request.method == 'POST':
@@ -467,7 +468,6 @@ def studentDetails():
         select_stmt_comp = "SELECT * FROM Company WHERE compID = %s"
         cur.execute(select_stmt_comp, (rows[22],))
         comp_rows = cur.fetchone()
-        cur.close()
 
         select_stmt_form = "SELECT * FROM Form WHERE formID = %s"
         cur.execute(select_stmt_form, (rows[21],))
