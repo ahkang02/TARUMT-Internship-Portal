@@ -166,7 +166,7 @@ def login():
         rows = None 
         cur = conn.cursor()
 
-        if username == app.config['ADMIN_CREDENTIALS'] and password == app.config['ADMIN_CREDENTIALS']:
+        if username == 'admin' and password == 'admin':
             session['username'] = username
             session['admin'] = True
             return redirect(url_for('studentsListing', page_num = 1))
